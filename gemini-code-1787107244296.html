@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salfa Montajes - Prevención de Riesgos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-10">
+
+  <!-- Encabezado con estado de Red -->
+  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
+    <div class="max-w-xl mx-auto flex justify-between items-center">
+      <div>
+        <h1 class="font-bold text-lg text-amber-500">SALFA MONTAJES</h1>
+        <p class="text-xs text-slate-400">Inspección de Prevención (HSE)</p>
+      </div>
+      <div id="net-status" class="flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="net-text">EN LÍNEA</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto p-4 space-y-6">
+
+    <!-- Indicador de Almacenamiento Offline -->
+    <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
+      <div>
+        <p class="text-xs text-slate-400">Registros guardados en dispositivo</p>
+        <p class="text-xl font-bold text-white"><span id="pending-count">0</span> <span class="text-xs font-normal text-slate-400">pendientes de sincronizar</span></p>
+      </div>
+      <button onclick="syncData()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-sm transition shadow-lg">
+        Sincronizar
+      </button>
+    </div>
+
+    <!-- Formularios / Checklists -->
+    <form id="checklist-form" onsubmit="saveChecklist(event)" class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-6">
+      <div class="border-b border-slate-700 pb-3">
+        <h2 class="text-lg font-bold text-amber-400">Lista de Verificación: Pre-Uso de Herramientas</h2>
+        <p class="text-xs text-slate-400">Complete los campos obligatorios antes de iniciar operaciones.</p>
+      </div>
+
+      <!-- Datos de Faena -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">RUT Operador / Lider</label>
+          <input type="text" id="rut" required placeholder="12345678-9" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Área / Frente Trabajo</label>
+          <input type="text" id="area" required placeholder="Ej: Chancado 01" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-amber-500 outline-none">
+        </div>
+      </div>
+
+      <!-- Items de Inspección -->
+      <div class="space-y-4 border-t border-slate-700 pt-4">
+        <h3 class="text-sm font-semibold text-slate-200">Puntos de Control</h3>
+        
+        <div class="flex items-center justify-between bg-slate-900 p-3 rounded-lg">
+          <span class="text-xs text-slate-300">1. ¿Cables y enchufes sin grietas ni cortes?</span>
+          <select id="item1" required class="bg-slate-800 text-xs border border-slate-700 rounded p-1.5 text-amber-400 font-bold">
+            <option value="CUMPLE">Cumple</option>
+            <option value="NO_CUMPLE">No Cumple</option>
+            <option value="N/A">N/A</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-between bg-slate-900 p-3 rounded-lg">
+          <span class="text-xs text-slate-300">2. ¿Cuenta con cinta del mes (Código de Colores)?</span>
+          <select id="item2" required class="bg-slate-800 text-xs border border-slate-700 rounded p-1.5 text-amber-400 font-bold">
+            <option value="CUMPLE">Cumple</option>
+            <option value="NO_CUMPLE">No Cumple</option>
+            <option value="N/A">N/A</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-between bg-slate-900 p-3 rounded-lg">
+          <span class="text-xs text-slate-300">3. ¿EPP específico disponible y en buen estado?</span>
+          <select id="item3" required class="bg-slate-800 text-xs border border-slate-700 rounded p-1.5 text-amber-400 font-bold">
+            <option value="CUMPLE">Cumple</option>
+            <option value="NO_CUMPLE">No Cumple</option>
+            <option value="N/A">N/A</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Firma Canvas -->
+      <div class="border-t border-slate-700 pt-4">
+        <label class="block text-xs font-medium text-slate-300 mb-2">Firma Digital del Supervisor / Prevencionista</label>
+        <div class="bg-white rounded-lg p-1">
+          <canvas id="signature-pad" class="w-full h-32 border border-slate-300 rounded touch-none bg-white"></canvas>
+        </div>
+        <button type="button" onclick="clearSignature()" class="mt-1 text-xs text-slate-400 hover:text-amber-400 underline">Limpiar firma</button>
+      </div>
+
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg">
+        Guardar Inspección
+      </button>
+    </form>
+
+  </main>
+
+  <script>
+    // --- LÓGICA DE ESTADO DE RED ---
+    function updateOnlineStatus() {
+      const netStatus = document.getElementById('net-status');
+      const netText = document.getElementById('net-text');
+      
+      if (navigator.onLine) {
+        netStatus.className = "flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+        netText.innerText = "EN LÍNEA";
+      } else {
+        netStatus.className = "flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400 border border-red-500/30";
+        netText.innerText = "MODO OFFLINE";
+      }
+    }
+
+    window.addEventListener('online', updateOnlineStatus);
+    window.addEventListener('offline', updateOnlineStatus);
+    updateOnlineStatus();
+
+    // --- LÓGICA DE CANVAS (FIRMA) ---
+    const canvas = document.getElementById('signature-pad');
+    const ctx = canvas.getContext('2d');
+    let writingIndex = false;
+
+    // Ajustar resolución del canvas
+    function resizeCanvas() {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      canvas.width = canvas.offsetWidth * ratio;
+      canvas.height = canvas.offsetHeight * ratio;
+      ctx.scale(ratio, ratio);
+      ctx.strokeStyle = "#000000";
+      ctx.lineWidth = 2;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 100);
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    canvas.addEventListener('mousedown', (e) => { writingIndex = true; ctx.beginPath(); const pos = getPos(e); ctx.moveTo(pos.x, pos.y); });
+    canvas.addEventListener('mousemove', (e) => { if(writingIndex) { const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); } });
+    window.addEventListener('mouseup', () => { writingIndex = false; });
+
+    canvas.addEventListener('touchstart', (e) => { writingIndex = true; ctx.beginPath(); const pos = getPos(e); ctx.moveTo(pos.x, pos.y); e.preventDefault(); });
+    canvas.addEventListener('touchmove', (e) => { if(writingIndex) { const pos = getPos(e); ctx.lineTo(pos.x, pos.y); ctx.stroke(); e.preventDefault(); } });
+    canvas.addEventListener('touchend', () => { writingIndex = false; });
+
+    function clearSignature() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // --- LÓGICA DE ALMACENAMIENTO LOCAL (OFFLINE QUEUE) ---
+    function getStoredData() {
+      return JSON.parse(localStorage.getItem('salfa_checklists') || '[]');
+    }
+
+    function updatePendingCount() {
+      const data = getStoredData();
+      document.getElementById('pending-count').innerText = data.length;
+    }
+
+    function saveChecklist(e) {
+      e.preventDefault();
+
+      const record = {
+        id: 'CHK-' + Date.now(),
+        timestamp: new Date().toISOString(),
+        rut: document.getElementById('rut').value,
+        area: document.getElementById('area').value,
+        items: {
+          item1: document.getElementById('item1').value,
+          item2: document.getElementById('item2').value,
+          item3: document.getElementById('item3').value,
+        },
+        signature: canvas.toDataURL(), // Base64 de la firma
+        synced: false
+      };
+
+      const currentQueue = getStoredData();
+      currentQueue.push(record);
+      localStorage.setItem('salfa_checklists', JSON.stringify(currentQueue));
+
+      alert('✅ Inspección guardada localmente en el dispositivo.');
+      document.getElementById('checklist-form').reset();
+      clearSignature();
+      updatePendingCount();
+    }
+
+    function syncData() {
+      const queue = getStoredData();
+      if (queue.length === 0) {
+        alert('No hay registros pendientes por sincronizar.');
+        return;
+      }
+
+      if (!navigator.onLine) {
+        alert('⚠️ Estás sin conexión a Internet. Conéctate a una red para sincronizar.');
+        return;
+      }
+
+      // Simulación de envío a API REST backend
+      console.log('Enviando a servidor backend de Salfa...', queue);
+      
+      setTimeout(() => {
+        localStorage.removeItem('salfa_checklists');
+        updatePendingCount();
+        alert(`🚀 ¡Sincronización exitosa! Se han subido ${queue.length} registros al servidor.`);
+      }, 1000);
+    }
+
+    updatePendingCount();
+  </script>
+</body>
+</html>
