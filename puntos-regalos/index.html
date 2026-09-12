@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Puntos Regalos</title>
+<meta name="description" content="Los papás evalúan responsabilidades, orden y estudios de sus hijos y ganan Puntos Regalos canjeables por premios.">
+<meta name="theme-color" content="#FF6FA0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%81%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* La app es 100% autocontenida (sin CDN de terceros para su funcionamiento)
+     para que funcione siempre igual, incluso sin conexión a internet. */
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; }
+  body{
+    font-family:'Nunito', -apple-system, 'Segoe UI', sans-serif;
+    background:linear-gradient(180deg,#FFF6E9,#EAF6FF 40%,#F3EBFF);
+    min-height:100vh; color:#334155; -webkit-font-smoothing:antialiased;
+  }
+  button, input, select, textarea{ font-family:inherit; }
+  img{ max-width:100%; }
+
+  .font-heading{ font-family:'Baloo 2', 'Nunito', sans-serif; }
+
+  /* ---- estructura ---- */
+  .container{ max-width:36rem; margin:0 auto; padding:0 1rem; }
+
+  .app-header{
+    position:sticky; top:0; z-index:40; color:#fff; padding:1rem 0;
+    background:linear-gradient(90deg,#FF6FA0,#FF9F43,#FFD23F);
+    box-shadow:0 2px 10px rgba(0,0,0,.10);
+  }
+  .app-header-inner{ display:flex; align-items:center; gap:.75rem; }
+  .app-header .icon{ font-size:1.9rem; line-height:1; }
+  .app-header h1{ margin:0; font-size:1.25rem; font-weight:700; }
+  .app-header p{ margin:.15rem 0 0; font-size:.75rem; color:rgba(255,255,255,.88); }
+
+  .app-main{ max-width:36rem; margin:0 auto; padding:0 1rem 6.5rem; }
+
+  .app-nav{
+    position:fixed; left:0; right:0; bottom:0; z-index:40; background:#fff;
+    border-top:4px solid #FFD23F; box-shadow:0 -4px 12px rgba(0,0,0,.08);
+  }
+  .app-nav-inner{ display:grid; grid-template-columns:repeat(5,1fr); max-width:36rem; margin:0 auto; }
+  .nav-btn{
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:2px; padding:.5rem 0; background:none; border:none; color:#94a3b8; cursor:pointer;
+  }
+  .nav-btn .icon{ font-size:1.25rem; transition:transform .15s ease; display:block; }
+  .nav-btn.active{ color:#FF6FA0; }
+  .nav-btn.active .icon{ transform:scale(1.15); }
+  .nav-btn .label{ font-size:10px; font-weight:700; }
+
+  /* ---- utilidades de layout ---- */
+  .stack{ display:flex; flex-direction:column; gap:1rem; padding-top:1rem; }
+  .row{ display:flex; align-items:center; gap:.5rem; }
+  .row-between{ display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+  .scroll-row{ display:flex; gap:.5rem; overflow-x:auto; padding-bottom:.25rem; }
+  .grow{ flex:1 1 auto; min-width:0; }
+
+  /* ---- tarjetas ---- */
+  .card{ background:#fff; border-radius:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:1rem; }
+  .section h2{ margin:0 0 .5rem; font-weight:700; color:#334155; font-size:1rem; display:flex; align-items:center; gap:.5rem; }
+
+  /* ---- botones ---- */
+  .btn-primary, .btn-secondary{
+    display:inline-flex; align-items:center; justify-content:center; gap:.25rem;
+    font-weight:800; padding:.75rem 1rem; border-radius:999px; border:none; cursor:pointer;
+    transition:transform .15s ease; font-size:.875rem;
+  }
+  .btn-primary{ background:linear-gradient(90deg,#FF6FA0,#FF9F43); color:#fff; box-shadow:0 4px 12px rgba(255,111,160,.35); }
+  .btn-secondary{ background:#EAF6FF; color:#2E86C1; border:2px solid #BFE3FF; }
+  .btn-primary:active, .btn-secondary:active{ transform:scale(.96); }
+  .btn-block{ width:100%; }
+  .btn-row > *{ flex:1; }
+
+  /* ---- chips selector de niños ---- */
+  .chip{
+    flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px;
+    padding:.5rem .8rem; border-radius:1rem; border:2px solid transparent; background:#F8FAFC; cursor:pointer;
+  }
+  .chip .emoji{ font-size:1.5rem; }
+  .chip .name{ font-size:11px; font-weight:700; color:#475569; max-width:5.5rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .chip.active{ border-color:#FF6FA0; background:rgba(255,111,160,.10); }
+
+  /* ---- tarjeta de niño (inicio) ---- */
+  .child-card{ background:#fff; border-radius:1.5rem; box-shadow:0 4px 12px rgba(0,0,0,.08); padding:1.25rem; border:4px solid var(--accent,#FF6FA0); }
+  .child-head{ display:flex; align-items:center; gap:.75rem; }
+  .child-avatar{ width:3.5rem; height:3.5rem; border-radius:999px; display:flex; align-items:center; justify-content:center; font-size:1.75rem; flex:0 0 auto; }
+  .child-name{ font-size:1.15rem; font-weight:700; color:#1e293b; margin:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .child-level{ font-size:.75rem; color:#64748B; margin:.15rem 0 0; }
+  .child-points{ text-align:right; flex:0 0 auto; }
+  .child-points .value{ font-size:1.5rem; font-weight:800; line-height:1; }
+  .child-points .label{ font-size:10px; color:#94A3B8; }
+  .progress-track{ margin-top:.75rem; height:.65rem; border-radius:999px; background:#F1F5F9; overflow:hidden; }
+  .progress-fill{ height:100%; border-radius:999px; transition:width .3s ease; }
+
+  /* ---- evaluar ---- */
+  .field-label{ font-size:.75rem; font-weight:700; color:#64748B; display:block; margin-bottom:.4rem; }
+  .input, .select, .textarea{ width:100%; border:2px solid #E2E8F0; border-radius:.75rem; padding:.6rem .75rem; font-size:.875rem; color:#334155; background:#fff; }
+  .input-inline{ width:auto; }
+  .textarea{ resize:none; }
+
+  .category-card{ background:#fff; border-radius:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:1rem; border-left:8px solid var(--accent); }
+  .category-title{ margin:0 0 .6rem; font-weight:700; color:#334155; display:flex; align-items:center; gap:.5rem; }
+  .check-list{ display:flex; flex-direction:column; gap:.5rem; }
+  .check-item{
+    display:flex; align-items:center; gap:.6rem; width:100%; text-align:left;
+    padding:.55rem .75rem; border-radius:.75rem; border:2px solid #F1F5F9; background:#F8FAFC;
+    cursor:pointer; font-size:.875rem; color:#475569;
+  }
+  .check-item .box{ font-size:1.1rem; flex:0 0 auto; }
+  .check-item.checked{ background:#ECFDF5; border-color:#6EE7B7; }
+  .check-item.checked .label{ color:#047857; font-weight:700; }
+
+  .bonus-row{ display:flex; align-items:center; justify-content:center; gap:1rem; }
+  .bonus-btn{ width:2.5rem; height:2.5rem; border-radius:999px; border:none; font-weight:800; font-size:1.05rem; cursor:pointer; }
+  .bonus-btn.minus{ background:#FEE2E2; color:#EF4444; }
+  .bonus-btn.plus{ background:#D1FAE5; color:#10B981; }
+  .bonus-display{ font-weight:800; font-size:1.1rem; width:3.5rem; text-align:center; color:#94A3B8; }
+  .bonus-display.pos{ color:#10B981; }
+  .bonus-display.neg{ color:#EF4444; }
+
+  .total-bar{ background:#fff; border-radius:1.25rem; box-shadow:0 4px 12px rgba(0,0,0,.08); padding:1rem; border:2px solid #FFD23F; display:flex; align-items:center; justify-content:space-between; gap:.75rem; }
+  .total-label{ font-size:10px; font-weight:800; color:#94A3B8; margin:0; }
+  .total-value{ font-size:1.5rem; font-weight:800; color:#FF6FA0; margin:0; }
+
+  /* ---- premios ---- */
+  .balance-banner{ background:linear-gradient(90deg,#FFD23F,#FF9F43); border-radius:1.25rem; padding:1rem; text-align:center; box-shadow:0 4px 12px rgba(0,0,0,.08); color:#fff; }
+  .balance-banner .label{ font-size:.7rem; font-weight:800; color:rgba(255,255,255,.92); margin:0; }
+  .balance-banner .value{ font-size:1.75rem; font-weight:800; margin:.1rem 0 0; }
+
+  .rewards-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+  .reward-card{ background:#fff; border-radius:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:.85rem; display:flex; flex-direction:column; align-items:center; text-align:center; gap:.25rem; }
+  .reward-card.disabled{ opacity:.6; }
+  .reward-card .emoji{ font-size:1.85rem; }
+  .reward-card .name{ font-size:.75rem; font-weight:700; color:#334155; line-height:1.25; min-height:2.2em; }
+  .reward-card .cost{ font-size:.7rem; font-weight:800; color:#FF9F43; }
+  .reward-btn{ margin-top:.25rem; width:100%; font-size:.7rem; font-weight:800; padding:.45rem 0; border-radius:999px; border:none; cursor:pointer; }
+  .reward-btn.can{ background:#10B981; color:#fff; }
+  .reward-btn.cannot{ background:#F1F5F9; color:#94A3B8; cursor:not-allowed; }
+
+  /* ---- historial ---- */
+  .history-item{ background:#fff; border-radius:1.25rem; box-shadow:0 1px 4px rgba(0,0,0,.07); padding:1rem; }
+  .history-name{ font-size:.875rem; font-weight:700; color:#334155; margin:0; }
+  .history-date{ font-size:11px; color:#94A3B8; margin:0; }
+  .history-points{ font-weight:800; font-size:1rem; }
+  .history-points.pos{ color:#10B981; }
+  .history-points.neg{ color:#FF6FA0; }
+  .icon-btn{ background:none; border:none; font-size:1.1rem; color:#CBD5E1; cursor:pointer; padding:.25rem; }
+  .icon-btn:hover{ color:#F87171; }
+  .history-tags{ margin-top:.6rem; display:flex; flex-wrap:wrap; gap:.3rem; }
+  .tag-badge{ font-size:10px; font-weight:800; padding:.2rem .55rem; border-radius:999px; }
+  .history-note{ margin:.6rem 0 0; font-size:.75rem; color:#64748B; font-style:italic; }
+
+  /* ---- ajustes ---- */
+  .list-row{ display:flex; align-items:center; justify-content:space-between; background:#F8FAFC; border-radius:.75rem; padding:.5rem .75rem; margin-bottom:.5rem; }
+  .list-row:last-child{ margin-bottom:0; }
+  .muted{ font-size:.8rem; color:#94A3B8; }
+  .form-divider{ border-top:1px solid #F1F5F9; margin-top:.85rem; padding-top:.85rem; display:flex; flex-direction:column; gap:.5rem; }
+  .picker-row{ display:flex; flex-wrap:wrap; gap:.5rem; }
+  .picker-label{ font-size:11px; font-weight:800; color:#94A3B8; margin:0 0 .3rem; }
+  .danger-btn{ width:100%; font-size:.875rem; font-weight:700; color:#EF4444; border:2px solid #FECACA; border-radius:.75rem; padding:.55rem 0; background:#fff; cursor:pointer; }
+
+  .avatar-btn{
+    font-size:20px; width:40px; height:40px; display:flex; align-items:center; justify-content:center;
+    border-radius:12px; background:#F3F4F6; border:2px solid transparent; cursor:pointer;
+  }
+  .avatar-btn.selected{ border-color:#FF6FA0; background:#FFE7EF; }
+  .color-btn{ width:28px; height:28px; border-radius:999px; border:3px solid transparent; cursor:pointer; }
+  .color-btn.selected{ border-color:#2D2D3A; }
+
+  /* ---- estado vacío ---- */
+  .empty-state{ padding:4rem 0; text-align:center; }
+  .empty-state .emoji{ font-size:3.5rem; }
+  .empty-state h2{ font-weight:700; color:#334155; margin:.5rem 0; }
+  .empty-state p{ font-size:.875rem; color:#64748B; max-width:20rem; margin:.5rem auto 1.25rem; }
+
+  /* ---- efectos ---- */
+  @keyframes fall {
+    0%   { transform: translateY(-10vh) rotate(0deg);   opacity: 1; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+  .confetti-piece{ position:fixed; top:-40px; animation-name:fall; animation-timing-function:ease-in; }
+
+  .toast-msg{
+    position:fixed; left:50%; bottom:88px; transform:translate(-50%,20px);
+    background:#2D2D3A; color:#fff; padding:10px 18px; border-radius:999px;
+    font-weight:700; font-size:13px; opacity:0; transition:all .3s ease; z-index:110;
+    max-width:88vw; text-align:center;
+  }
+  .toast-msg.show{ opacity:1; transform:translate(-50%,0); }
+
+  ::-webkit-scrollbar{ height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb{ background:#FFD1E1; border-radius:999px; }
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ---------- Constantes ----------
+    const STORAGE_KEY = 'puntosRegalosData_v1';
+    const AVATAR_OPTIONS = ['🦄','🐯','🐶','🐱','🦁','🐸','🐵','🐰','🦊','🐼','🐻','🦋','🐬','🦖','👦','👧'];
+    const COLOR_OPTIONS = ['#FF6FA0','#FF9F43','#FFD23F','#6FCF97','#3DB2FF','#A66DD4','#FF6B6B','#2EC4B6'];
+    const REWARD_ICON_OPTIONS = ['🍦','🎮','🍕','🎬','🎡','🧸','🍫','⚽','🎨','📱','🚲','🎁','🎳','🍿','🌟','📖'];
+
+    const NAV_ITEMS = [
+      { key:'inicio',    label:'Inicio',    icon:'🏠' },
+      { key:'evaluar',   label:'Evaluar',   icon:'✅' },
+      { key:'premios',   label:'Premios',   icon:'🎁' },
+      { key:'historial', label:'Historial', icon:'📜' },
+      { key:'ajustes',   label:'Ajustes',   icon:'⚙️' },
+    ];
+
+    const TAB_SUBTITLES = {
+      inicio: 'Su panel de logros',
+      evaluar: 'Registra su desempeño de hoy',
+      premios: 'Canjea puntos por premios',
+      historial: 'Todo lo que han logrado',
+      ajustes: 'Administra niños, premios y puntaje'
+    };
+
+    // ---------- Utilidades ----------
+    function uid(){ return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,8); }
+    function todayStr(){ const d = new Date(); return d.toISOString().slice(0,10); }
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    }
+    function formatDate(iso){
+      const [y,m,d] = iso.split('-').map(Number);
+      const date = new Date(y, (m||1)-1, d||1);
+      return date.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+    }
+
+    // ---------- Estado por defecto ----------
+    function defaultState(){
+      return {
+        version: 1,
+        children: [],
+        evaluations: [],
+        rewards: [
+          { id: uid(), name: 'Helado especial',               icon: '🍦', cost: 20 },
+          { id: uid(), name: '30 min extra de pantalla',      icon: '🎮', cost: 30 },
+          { id: uid(), name: 'Elegir la cena de hoy',         icon: '🍕', cost: 25 },
+          { id: uid(), name: 'Noche de película en familia',  icon: '🎬', cost: 40 },
+          { id: uid(), name: 'Salida al parque',              icon: '🎡', cost: 60 },
+          { id: uid(), name: 'Juguete sorpresa',              icon: '🧸', cost: 100 },
+        ],
+        redemptions: [],
+        settings: {
+          pointsPerItem: 5,
+          categories: [
+            { key:'responsabilidades', name:'Responsabilidades', icon:'🧺', color:'#FF9F43',
+              items: [
+                'Hizo su cama',
+                'Recogió sus juguetes y útiles',
+                'Ayudó en una tarea del hogar',
+                'Fue amable y respetuoso con la familia',
+                'Siguió las instrucciones a la primera'
+              ]
+            },
+            { key:'habitacion', name:'Orden y Aseo de su Habitación', icon:'🛏️', color:'#3DB2FF',
+              items: [
+                'Ropa guardada en su lugar',
+                'Piso limpio y despejado',
+                'Escritorio o mesa ordenado',
+                'Cama bien tendida',
+                'Basura y desorden recogidos'
+              ]
+            },
+            { key:'estudios', name:'Estudios', icon:'📚', color:'#A66DD4',
+              items: [
+                'Hizo la tarea sin que se lo recordaran',
+                'Leyó al menos 15-20 minutos',
+                'Buena atención y comportamiento en clases',
+                'Entregó tareas o trabajos a tiempo',
+                'Estudió o repasó contenidos'
+              ]
+            }
+          ],
+          levels: [
+            { min:0,    name:'Explorador',      icon:'🐣' },
+            { min:100,  name:'Aventurero',       icon:'🚀' },
+            { min:250,  name:'Campeón',          icon:'🏆' },
+            { min:500,  name:'Súper Estrella',   icon:'🌟' },
+            { min:1000, name:'Leyenda',          icon:'👑' }
+          ]
+        }
+      };
+    }
+
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return defaultState();
+        const parsed = JSON.parse(raw);
+        const def = defaultState();
+        return {
+          version: 1,
+          children: Array.isArray(parsed.children) ? parsed.children : [],
+          evaluations: Array.isArray(parsed.evaluations) ? parsed.evaluations : [],
+          rewards: Array.isArray(parsed.rewards) ? parsed.rewards : def.rewards,
+          redemptions: Array.isArray(parsed.redemptions) ? parsed.redemptions : [],
+          settings: {
+            pointsPerItem: (parsed.settings && parsed.settings.pointsPerItem) || def.settings.pointsPerItem,
+            categories: (parsed.settings && parsed.settings.categories) || def.settings.categories,
+            levels: (parsed.settings && parsed.settings.levels) || def.settings.levels,
+          }
+        };
+      }catch(e){
+        console.error('No se pudieron leer los datos guardados, se usarán valores por defecto.', e);
+        return defaultState();
+      }
+    }
+
+    function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+    // ---------- Estado global ----------
+    let state = loadState();
+    let ui = {
+      tab: 'inicio',
+      evalChildId: null,
+      evalDate: todayStr(),
+      evalChecks: {},
+      evalBonus: 0,
+      premiosChildId: null,
+      historialChildId: 'todos',
+      newChildAvatar: AVATAR_OPTIONS[0],
+      newChildColor: COLOR_OPTIONS[0],
+      newRewardIcon: REWARD_ICON_OPTIONS[0],
+    };
+
+    // ---------- Cálculos derivados ----------
+    function getChild(id){ return state.children.find(c => c.id === id); }
+    function pointsEarned(childId){
+      return state.evaluations.filter(e => e.childId === childId).reduce((s,e) => s + e.totalPoints, 0);
+    }
+    function pointsSpent(childId){
+      return state.redemptions.filter(r => r.childId === childId).reduce((s,r) => s + r.cost, 0);
+    }
+    function balanceOf(childId){ return pointsEarned(childId) - pointsSpent(childId); }
+    function getLevel(totalEarned){
+      const levels = state.settings.levels;
+      let current = levels[0];
+      for(const lvl of levels){ if(totalEarned >= lvl.min) current = lvl; }
+      const idx = levels.indexOf(current);
+      const next = levels[idx+1] || null;
+      let pct = 100;
+      if(next){ pct = Math.max(0, Math.min(100, Math.round((totalEarned-current.min)/(next.min-current.min)*100))); }
+      return { current, next, pct };
+    }
+
+    // ---------- Navegación ----------
+    function setTab(t){
+      ui.tab = t;
+      if(t === 'evaluar' && !ui.evalChildId) resetEvalForm();
+      render();
+      window.scrollTo(0,0);
+    }
+    function goEvaluate(childId){ ui.tab = 'evaluar'; resetEvalForm(childId); render(); window.scrollTo(0,0); }
+    function goPremios(childId){ ui.tab = 'premios'; ui.premiosChildId = childId; render(); window.scrollTo(0,0); }
+
+    // ---------- Render principal ----------
+    function render(){
+      const app = document.getElementById('app');
+      const tabRenderers = {
+        inicio: renderInicio,
+        evaluar: renderEvaluar,
+        premios: renderPremios,
+        historial: renderHistorial,
+        ajustes: renderAjustes,
+      };
+      app.innerHTML = `
+        ${renderHeader()}
+        <main class="app-main">
+          ${tabRenderers[ui.tab] ? tabRenderers[ui.tab]() : renderInicio()}
+        </main>
+        ${renderNav()}
+      `;
+    }
+
+    function renderHeader(){
+      return `
+      <header class="app-header">
+        <div class="container app-header-inner">
+          <div class="icon">🎁</div>
+          <div>
+            <h1 class="font-heading">Puntos Regalos</h1>
+            <p>${TAB_SUBTITLES[ui.tab] || ''}</p>
+          </div>
+        </div>
+      </header>`;
+    }
+
+    function renderNav(){
+      return `
+      <nav class="app-nav">
+        <div class="app-nav-inner">
+          ${NAV_ITEMS.map(it => `
+            <button onclick="setTab('${it.key}')" class="nav-btn ${ui.tab===it.key ? 'active' : ''}">
+              <span class="icon">${it.icon}</span>
+              <span class="label">${it.label}</span>
+            </button>
+          `).join('')}
+        </div>
+      </nav>`;
+    }
+
+    // ---------- Estado vacío ----------
+    function emptyStateNoChildren(){
+      return `
+      <div class="empty-state">
+        <div class="emoji">🧒🎉</div>
+        <h2 class="font-heading">¡Bienvenido a Puntos Regalos!</h2>
+        <p>Agrega a tu primer niño o niña para comenzar a evaluar responsabilidades, orden y estudios, ¡y ganar puntos por sus logros!</p>
+        <button onclick="setTab('ajustes')" class="btn-primary">➕ Agregar niño/a</button>
+      </div>`;
+    }
+
+    // ---------- Tab: Inicio ----------
+    function renderInicio(){
+      if(state.children.length === 0) return emptyStateNoChildren();
+      return `<div class="stack">${state.children.map(childCard).join('')}</div>`;
+    }
+
+    function childCard(c){
+      const earned = pointsEarned(c.id);
+      const bal = balanceOf(c.id);
+      const { current, next, pct } = getLevel(earned);
+      return `
+      <div class="child-card" style="--accent:${c.color}">
+        <div class="child-head">
+          <div class="child-avatar" style="background:${c.color}33">${c.avatar}</div>
+          <div class="grow">
+            <p class="child-name font-heading">${escapeHtml(c.name)}</p>
+            <p class="child-level">${current.icon} ${current.name}${next ? ` · faltan ${next.min-earned} pts para ${next.name} ${next.icon}` : ' · ¡Nivel máximo!'}</p>
+          </div>
+          <div class="child-points">
+            <p class="value font-heading" style="color:${c.color}">${bal}</p>
+            <p class="label">disponibles</p>
+          </div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${c.color}"></div></div>
+        <div class="row btn-row" style="margin-top:1rem">
+          <button onclick="goEvaluate('${c.id}')" class="btn-primary">✅ Evaluar</button>
+          <button onclick="goPremios('${c.id}')" class="btn-secondary">🎁 Premios</button>
+        </div>
+      </div>`;
+    }
+
+    // ---------- Tab: Evaluar ----------
+    function resetEvalForm(childId){
+      ui.evalChildId = childId || (state.children[0] && state.children[0].id) || null;
+      ui.evalDate = todayStr();
+      ui.evalBonus = 0;
+      ui.evalChecks = {};
+      state.settings.categories.forEach(cat => { ui.evalChecks[cat.key] = {}; });
+    }
+
+    function computeEvalTotal(){
+      const perItem = state.settings.pointsPerItem;
+      const checkedCount = Object.values(ui.evalChecks).reduce((s,cat) => s + Object.values(cat).filter(Boolean).length, 0);
+      return checkedCount*perItem + ui.evalBonus;
+    }
+
+    function renderEvaluar(){
+      if(state.children.length === 0) return emptyStateNoChildren();
+      if(!ui.evalChildId) resetEvalForm();
+      const total = computeEvalTotal();
+
+      return `
+        <div class="stack">
+          <div class="scroll-row">
+            ${state.children.map(c => `
+              <button onclick="selectEvalChild('${c.id}')" class="chip ${c.id===ui.evalChildId ? 'active' : ''}">
+                <span class="emoji">${c.avatar}</span>
+                <span class="name">${escapeHtml(c.name)}</span>
+              </button>
+            `).join('')}
+          </div>
+
+          <div class="card row-between">
+            <label class="field-label" style="margin:0">📅 Fecha</label>
+            <input type="date" id="eval-date" value="${ui.evalDate}" onchange="ui.evalDate=this.value" class="input input-inline">
+          </div>
+
+          ${state.settings.categories.map(renderCategoryCard).join('')}
+
+          <div class="card">
+            <label class="field-label" style="text-align:center">⭐ Puntos extra (bono o descuento)</label>
+            <div class="bonus-row">
+              <button onclick="adjustBonus(-5)" class="bonus-btn minus">−5</button>
+              <span id="bonus-display" class="bonus-display ${ui.evalBonus>0?'pos':ui.evalBonus<0?'neg':''}">${ui.evalBonus>0?'+':''}${ui.evalBonus}</span>
+              <button onclick="adjustBonus(5)" class="bonus-btn plus">+5</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <label class="field-label">📝 Observación (opcional)</label>
+            <textarea id="eval-note" rows="2" placeholder="Ej: ¡Hoy se esforzó mucho en matemáticas!" class="textarea"></textarea>
+          </div>
+
+          <div class="total-bar">
+            <div>
+              <p class="total-label">TOTAL A GANAR</p>
+              <p id="total-display" class="total-value font-heading">${total} pts</p>
+            </div>
+            <button onclick="submitEvaluation()" class="btn-primary">🚀 Guardar evaluación</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCategoryCard(cat){
+      const checks = ui.evalChecks[cat.key] || {};
+      return `
+      <div class="category-card" style="--accent:${cat.color}">
+        <h3 class="category-title font-heading"><span>${cat.icon}</span> ${cat.name}</h3>
+        <div class="check-list">
+          ${cat.items.map((item, idx) => {
+            const isChecked = !!checks[idx];
+            return `
+            <button type="button" onclick="toggleEvalItem('${cat.key}',${idx},this)" class="check-item ${isChecked ? 'checked' : ''}">
+              <span class="box">${isChecked ? '✅' : '⬜'}</span>
+              <span class="label">${escapeHtml(item)}</span>
+            </button>`;
+          }).join('')}
+        </div>
+      </div>`;
+    }
+
+    function selectEvalChild(id){ resetEvalForm(id); render(); }
+
+    function toggleEvalItem(catKey, idx, btnEl){
+      if(!ui.evalChecks[catKey]) ui.evalChecks[catKey] = {};
+      ui.evalChecks[catKey][idx] = !ui.evalChecks[catKey][idx];
+      const checked = ui.evalChecks[catKey][idx];
+      btnEl.classList.toggle('checked', checked);
+      btnEl.querySelector('.box').textContent = checked ? '✅' : '⬜';
+      updateEvalTotalDisplay();
+    }
+
+    function updateEvalTotalDisplay(){
+      const el = document.getElementById('total-display');
+      if(el) el.textContent = computeEvalTotal() + ' pts';
+    }
+
+    function adjustBonus(delta){
+      const nv = ui.evalBonus + delta;
+      if(nv < -20 || nv > 20) return;
+      ui.evalBonus = nv;
+      const el = document.getElementById('bonus-display');
+      if(el){
+        el.textContent = (ui.evalBonus>0?'+':'') + ui.evalBonus;
+        el.classList.toggle('pos', ui.evalBonus>0);
+        el.classList.toggle('neg', ui.evalBonus<0);
+      }
+      updateEvalTotalDisplay();
+    }
+
+    function submitEvaluation(){
+      if(!ui.evalChildId){ alert('Selecciona un niño o niña primero.'); return; }
+      const noteEl = document.getElementById('eval-note');
+      const note = noteEl ? noteEl.value.trim() : '';
+      const perItem = state.settings.pointsPerItem;
+      const categoriesResult = {};
+      state.settings.categories.forEach(cat => {
+        const checks = ui.evalChecks[cat.key] || {};
+        const checkedItems = cat.items.filter((_,idx) => checks[idx]);
+        categoriesResult[cat.key] = {
+          checkedItems,
+          points: checkedItems.length*perItem,
+          maxPoints: cat.items.length*perItem
+        };
+      });
+      const total = computeEvalTotal();
+      const child = getChild(ui.evalChildId);
+      state.evaluations.push({
+        id: uid(),
+        childId: ui.evalChildId,
+        date: ui.evalDate,
+        categories: categoriesResult,
+        bonus: ui.evalBonus,
+        totalPoints: total,
+        note,
+        createdAt: new Date().toISOString()
+      });
+      save();
+      celebrate();
+      showToast(`¡${child.name} ganó ${total} puntos! 🎉`);
+      resetEvalForm(ui.evalChildId);
+      render();
+      window.scrollTo(0,0);
+    }
+
+    // ---------- Tab: Premios ----------
+    function renderPremios(){
+      if(state.children.length === 0) return emptyStateNoChildren();
+      if(!ui.premiosChildId) ui.premiosChildId = state.children[0].id;
+      const child = getChild(ui.premiosChildId);
+      const bal = balanceOf(child.id);
+      return `
+      <div class="stack">
+        <div class="scroll-row">
+          ${state.children.map(c => `
+            <button onclick="selectPremiosChild('${c.id}')" class="chip ${c.id===ui.premiosChildId ? 'active' : ''}">
+              <span class="emoji">${c.avatar}</span>
+              <span class="name">${escapeHtml(c.name)}</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <div class="balance-banner">
+          <p class="label">PUNTOS DISPONIBLES DE ${escapeHtml(child.name.toUpperCase())}</p>
+          <p class="value font-heading">${bal} 🌟</p>
+        </div>
+
+        ${state.rewards.length === 0
+          ? `<p class="muted" style="text-align:center;padding:2rem 0">Aún no hay premios. Agrega algunos en Ajustes ⚙️</p>`
+          : `<div class="rewards-grid">${state.rewards.map(r => rewardCard(r, bal)).join('')}</div>`}
+      </div>`;
+    }
+
+    function rewardCard(r, bal){
+      const canAfford = bal >= r.cost;
+      return `
+      <div class="reward-card ${canAfford ? '' : 'disabled'}">
+        <span class="emoji">${r.icon}</span>
+        <p class="name">${escapeHtml(r.name)}</p>
+        <p class="cost">${r.cost} pts</p>
+        <button ${canAfford ? `onclick="redeemReward('${r.id}')"` : 'disabled'} class="reward-btn ${canAfford ? 'can' : 'cannot'}">
+          ${canAfford ? 'Canjear 🎉' : 'Faltan ' + (r.cost - bal) + ' pts'}
+        </button>
+      </div>`;
+    }
+
+    function selectPremiosChild(id){ ui.premiosChildId = id; render(); }
+
+    function redeemReward(rewardId){
+      const reward = state.rewards.find(r => r.id === rewardId);
+      const child = getChild(ui.premiosChildId);
+      if(!reward || !child) return;
+      const bal = balanceOf(child.id);
+      if(bal < reward.cost){ alert('Aún no tiene suficientes puntos para este premio.'); return; }
+      if(!confirm(`¿Canjear "${reward.name}" por ${reward.cost} puntos?`)) return;
+      state.redemptions.push({
+        id: uid(), childId: child.id, rewardId: reward.id, rewardName: reward.name, rewardIcon: reward.icon,
+        cost: reward.cost, date: todayStr(), createdAt: new Date().toISOString()
+      });
+      save();
+      celebrate();
+      showToast(`¡${child.name} canjeó ${reward.icon} ${reward.name}!`);
+      render();
+    }
+
+    // ---------- Tab: Historial ----------
+    function renderHistorial(){
+      if(state.children.length === 0) return emptyStateNoChildren();
+      const filterId = ui.historialChildId;
+      const evals = state.evaluations.filter(e => filterId==='todos' || e.childId===filterId).map(e => ({...e, kind:'eval'}));
+      const reds = state.redemptions.filter(r => filterId==='todos' || r.childId===filterId).map(r => ({...r, kind:'redeem'}));
+      const items = [...evals, ...reds].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+      return `
+      <div class="stack">
+        <select onchange="setHistorialFilter(this.value)" class="select">
+          <option value="todos" ${filterId==='todos'?'selected':''}>👨‍👩‍👧‍👦 Todos</option>
+          ${state.children.map(c => `<option value="${c.id}" ${filterId===c.id?'selected':''}>${c.avatar} ${escapeHtml(c.name)}</option>`).join('')}
+        </select>
+
+        ${items.length === 0
+          ? `<p class="muted" style="text-align:center;padding:3rem 0">Aún no hay registros. ¡Evalúa a un niño para comenzar! ✨</p>`
+          : items.map(historyRow).join('')}
+      </div>`;
+    }
+
+    function historyRow(item){
+      const child = getChild(item.childId);
+      if(!child) return '';
+      const dateStr = formatDate(item.date);
+      if(item.kind === 'eval'){
+        return `
+        <div class="history-item">
+          <div class="row-between">
+            <div class="row">
+              <span style="font-size:1.25rem">${child.avatar}</span>
+              <div>
+                <p class="history-name">${escapeHtml(child.name)}</p>
+                <p class="history-date">${dateStr}</p>
+              </div>
+            </div>
+            <div class="row">
+              <span class="history-points pos">+${item.totalPoints} pts</span>
+              <button onclick="deleteEvaluation('${item.id}')" class="icon-btn">🗑️</button>
+            </div>
+          </div>
+          <div class="history-tags">
+            ${Object.entries(item.categories).map(([key,val]) => {
+              const cat = state.settings.categories.find(c => c.key===key);
+              if(!cat) return '';
+              return `<span class="tag-badge" style="background:${cat.color}22;color:${cat.color}">${cat.icon} ${val.points}/${val.maxPoints}</span>`;
+            }).join('')}
+            ${item.bonus ? `<span class="tag-badge" style="background:${item.bonus>0?'#ECFDF5':'#FEF2F2'};color:${item.bonus>0?'#059669':'#EF4444'}">⭐ ${item.bonus>0?'+':''}${item.bonus}</span>` : ''}
+          </div>
+          ${item.note ? `<p class="history-note">"${escapeHtml(item.note)}"</p>` : ''}
+        </div>`;
+      }
+      return `
+      <div class="history-item row-between">
+        <div class="row">
+          <span style="font-size:1.25rem">${child.avatar}</span>
+          <div>
+            <p class="history-name">${escapeHtml(child.name)} canjeó ${item.rewardIcon} ${escapeHtml(item.rewardName)}</p>
+            <p class="history-date">${dateStr}</p>
+          </div>
+        </div>
+        <div class="row">
+          <span class="history-points neg">-${item.cost} pts</span>
+          <button onclick="deleteRedemption('${item.id}')" class="icon-btn">🗑️</button>
+        </div>
+      </div>`;
+    }
+
+    function setHistorialFilter(v){ ui.historialChildId = v; render(); }
+
+    function deleteEvaluation(id){
+      if(!confirm('¿Eliminar esta evaluación? Se restarán los puntos ganados.')) return;
+      state.evaluations = state.evaluations.filter(e => e.id !== id);
+      save(); render();
+    }
+    function deleteRedemption(id){
+      if(!confirm('¿Eliminar este canje? Se devolverán los puntos.')) return;
+      state.redemptions = state.redemptions.filter(r => r.id !== id);
+      save(); render();
+    }
+
+    // ---------- Tab: Ajustes ----------
+    function renderAjustes(){
+      return `
+      <div class="stack">
+
+        <section class="card section">
+          <h2>👨‍👩‍👧 Niños y niñas</h2>
+          ${state.children.length === 0 ? '<p class="muted">Aún no hay niños agregados.</p>' : `
+            <div>
+              ${state.children.map(c => `
+                <div class="list-row">
+                  <div class="row"><span style="font-size:1.25rem">${c.avatar}</span><span style="font-weight:700;font-size:.875rem">${escapeHtml(c.name)}</span></div>
+                  <button onclick="removeChild('${c.id}')" class="icon-btn">🗑️</button>
+                </div>
+              `).join('')}
+            </div>
+          `}
+          <div class="form-divider">
+            <input id="new-child-name" type="text" placeholder="Nombre del niño o niña" maxlength="30" class="input">
+            <div>
+              <p class="picker-label">Avatar</p>
+              <div id="avatar-picker" class="picker-row">
+                ${AVATAR_OPTIONS.map(a => `<button type="button" onclick="pickAvatar(this,'${a}')" class="avatar-btn ${ui.newChildAvatar===a?'selected':''}">${a}</button>`).join('')}
+              </div>
+            </div>
+            <div>
+              <p class="picker-label">Color</p>
+              <div id="color-picker" class="picker-row">
+                ${COLOR_OPTIONS.map(col => `<button type="button" onclick="pickColor(this,'${col}')" style="background:${col}" class="color-btn ${ui.newChildColor===col?'selected':''}"></button>`).join('')}
+              </div>
+            </div>
+            <button onclick="addChild()" class="btn-primary btn-block">➕ Agregar niño/a</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2>🎁 Premios disponibles</h2>
+          ${state.rewards.length === 0 ? '<p class="muted">Aún no hay premios.</p>' : `
+            <div>
+              ${state.rewards.map(r => `
+                <div class="list-row">
+                  <div class="row">
+                    <span style="font-size:1.25rem">${r.icon}</span>
+                    <span style="font-weight:700;font-size:.875rem">${escapeHtml(r.name)}</span>
+                    <span style="font-size:.75rem;color:#FF9F43;font-weight:800">${r.cost} pts</span>
+                  </div>
+                  <button onclick="removeReward('${r.id}')" class="icon-btn">🗑️</button>
+                </div>
+              `).join('')}
+            </div>
+          `}
+          <div class="form-divider">
+            <input id="new-reward-name" type="text" placeholder="Nombre del premio" maxlength="40" class="input">
+            <input id="new-reward-cost" type="number" min="1" step="1" placeholder="Costo en puntos" class="input">
+            <div>
+              <p class="picker-label">Ícono</p>
+              <div id="reward-icon-picker" class="picker-row">
+                ${REWARD_ICON_OPTIONS.map(ic => `<button type="button" onclick="pickRewardIcon(this,'${ic}')" class="avatar-btn ${ui.newRewardIcon===ic?'selected':''}">${ic}</button>`).join('')}
+              </div>
+            </div>
+            <button onclick="addReward()" class="btn-secondary btn-block">➕ Agregar premio</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2>⚙️ Puntaje</h2>
+          <label class="field-label">Puntos por cada ítem cumplido</label>
+          <div class="row">
+            <input id="points-per-item" type="number" min="1" step="1" value="${state.settings.pointsPerItem}" class="input grow">
+            <button onclick="savePointsPerItem()" class="btn-secondary">Guardar</button>
+          </div>
+        </section>
+
+        <section class="card section">
+          <h2>🗑️ Datos</h2>
+          <p class="muted">Esto borrará niños, evaluaciones, canjes y premios personalizados de este dispositivo.</p>
+          <button onclick="resetAllData()" class="danger-btn">Borrar todos los datos</button>
+        </section>
+
+      </div>`;
+    }
+
+    function pickAvatar(btn, avatar){
+      ui.newChildAvatar = avatar;
+      document.querySelectorAll('#avatar-picker .avatar-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+    function pickColor(btn, color){
+      ui.newChildColor = color;
+      document.querySelectorAll('#color-picker .color-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+    function pickRewardIcon(btn, icon){
+      ui.newRewardIcon = icon;
+      document.querySelectorAll('#reward-icon-picker .avatar-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function addChild(){
+      const nameInput = document.getElementById('new-child-name');
+      const name = nameInput.value.trim();
+      if(!name){ alert('Escribe un nombre para el niño o niña.'); nameInput.focus(); return; }
+      state.children.push({
+        id: uid(), name, avatar: ui.newChildAvatar || AVATAR_OPTIONS[0], color: ui.newChildColor || COLOR_OPTIONS[0],
+        createdAt: new Date().toISOString()
+      });
+      save();
+      ui.newChildAvatar = AVATAR_OPTIONS[0];
+      ui.newChildColor = COLOR_OPTIONS[0];
+      showToast(`¡${name} fue agregado/a! 🎉`);
+      render();
+    }
+
+    function removeChild(id){
+      const child = getChild(id);
+      if(!child) return;
+      if(!confirm(`¿Eliminar a ${child.name}? También se borrarán sus evaluaciones y canjes.`)) return;
+      state.children = state.children.filter(c => c.id !== id);
+      state.evaluations = state.evaluations.filter(e => e.childId !== id);
+      state.redemptions = state.redemptions.filter(r => r.childId !== id);
+      if(ui.evalChildId === id) ui.evalChildId = null;
+      if(ui.premiosChildId === id) ui.premiosChildId = null;
+      save(); render();
+    }
+
+    function addReward(){
+      const nameInput = document.getElementById('new-reward-name');
+      const costInput = document.getElementById('new-reward-cost');
+      const name = nameInput.value.trim();
+      const cost = parseInt(costInput.value, 10);
+      if(!name){ alert('Escribe un nombre para el premio.'); nameInput.focus(); return; }
+      if(!cost || cost <= 0){ alert('Escribe un costo válido en puntos.'); costInput.focus(); return; }
+      state.rewards.push({ id: uid(), name, cost, icon: ui.newRewardIcon || REWARD_ICON_OPTIONS[0] });
+      save();
+      ui.newRewardIcon = REWARD_ICON_OPTIONS[0];
+      showToast(`¡Premio "${name}" agregado! 🎁`);
+      render();
+    }
+
+    function removeReward(id){
+      const reward = state.rewards.find(r => r.id === id);
+      if(!reward) return;
+      if(!confirm(`¿Eliminar el premio "${reward.name}"?`)) return;
+      state.rewards = state.rewards.filter(r => r.id !== id);
+      save(); render();
+    }
+
+    function savePointsPerItem(){
+      const input = document.getElementById('points-per-item');
+      const val = parseInt(input.value, 10);
+      if(!val || val <= 0){ alert('Ingresa un número válido mayor a 0.'); return; }
+      state.settings.pointsPerItem = val;
+      save();
+      showToast('¡Puntaje actualizado!');
+      render();
+    }
+
+    function resetAllData(){
+      if(!confirm('¿Seguro que quieres borrar TODOS los datos? Esta acción no se puede deshacer.')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = defaultState();
+      ui.evalChildId = null; ui.premiosChildId = null; ui.historialChildId = 'todos';
+      save();
+      showToast('Datos borrados.');
+      ui.tab = 'inicio';
+      render();
+    }
+
+    // ---------- Efectos ----------
+    function celebrate(){
+      const emojis = ['🎉','⭐','🎊','🌟','✨'];
+      const container = document.createElement('div');
+      container.className = 'confetti-container';
+      container.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:100;overflow:hidden;';
+      document.body.appendChild(container);
+      for(let i=0;i<24;i++){
+        const span = document.createElement('span');
+        span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+        span.className = 'confetti-piece';
+        span.style.left = Math.random()*100 + '%';
+        span.style.animationDuration = (0.8 + Math.random()*0.8) + 's';
+        span.style.animationDelay = (Math.random()*0.3) + 's';
+        span.style.fontSize = (16 + Math.random()*16) + 'px';
+        container.appendChild(span);
+      }
+      setTimeout(() => container.remove(), 2000);
+    }
+
+    function showToast(msg){
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.classList.add('show'), 10);
+      setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 2200);
+    }
+
+    // ---------- Inicio ----------
+    render();
+  </script>
+</body>
+</html>
