@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>Control Operacional Preventivo</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div>
+        <h1>Control Operacional</h1>
+        <p class="sub">Prevención de riesgos en terreno</p>
+      </div>
+      <div id="net-status" class="pill pill-ok"><span class="dot"></span><span id="net-text">EN LÍNEA</span></div>
+    </div>
+  </header>
+
+  <main id="view" class="container"></main>
+
+  <nav class="tabbar">
+    <a href="#/inicio" data-route="inicio"><span>🏠</span>Inicio</a>
+    <a href="#/inspeccion" data-route="inspeccion"><span>✅</span>Inspección</a>
+    <a href="#/observacion" data-route="observacion"><span>👁️</span>Observación</a>
+    <a href="#/registros" data-route="registros"><span>📋</span>Registros</a>
+    <a href="#/ajustes" data-route="ajustes"><span>⚙️</span>Ajustes</a>
+  </nav>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="templates.js"></script>
+  <script src="db.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
