@@ -1,0 +1,484 @@
+<title>Taller Práctico RF N°27</title>
+<meta name="description" content="Taller práctico de controles críticos preventivos y mitigadores del Riesgo de Fatalidad N°27: interacción persona–vehículo y equipo móvil.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+  /* Layout: hoja de taller en una columna (≈ carta), cada control como bloque con franja de código; tabla de verificación con respuesta Sí/No/N/A */
+  :root {
+    --bg: #f3f4f1;
+    --paper: #ffffff;
+    --ink: #1c2226;
+    --muted: #5b6670;
+    --line: #d5d9d6;
+    --accent: #e0560f;        /* naranjo alta visibilidad */
+    --accent-ink: #ffffff;
+    --ccm: #1f6f8b;           /* azul para control mitigador */
+    --soft: #fbefe7;
+    --soft-ccm: #e5f1f5;
+    --ok: #2f7d4a;
+    --bad: #b3261e;
+    --na: #6b7280;
+    --font-display: "Archivo", "Arial Narrow", Arial, sans-serif;
+    --font-body: "Source Sans 3", "Segoe UI", Roboto, Arial, sans-serif;
+    --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14181b; --paper: #1c2125; --ink: #e8ebe9; --muted: #9aa5ad; --line: #333b41;
+      --accent: #ff7a33; --accent-ink: #1a0d05; --ccm: #5bb3d1; --soft: #2c211b; --soft-ccm: #1b2a31;
+      --ok: #6cc38a; --bad: #f2867d; --na: #9ca3af; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14181b; --paper: #1c2125; --ink: #e8ebe9; --muted: #9aa5ad; --line: #333b41;
+    --accent: #ff7a33; --accent-ink: #1a0d05; --ccm: #5bb3d1; --soft: #2c211b; --soft-ccm: #1b2a31;
+    --ok: #6cc38a; --bad: #f2867d; --na: #9ca3af; color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.55; padding: 24px 16px 48px; }
+  .sheet { max-width: 920px; margin: 0 auto; display: grid; gap: 28px; }
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; }
+  h1 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); font-weight: 800; }
+  h2 { font-size: 1.45rem; font-weight: 700; }
+  h3 { font-size: 1.05rem; font-weight: 700; }
+  p { margin: 0; max-width: 68ch; }
+  .label { font-family: var(--font-mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .mono { font-family: var(--font-mono); }
+
+  /* Encabezado */
+  header.top { display: grid; gap: 14px; padding-bottom: 20px; border-bottom: 3px solid var(--ink); }
+  .rf-badge { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-weight: 700; font-size: .85rem; }
+  .rf-badge span:first-child { background: var(--accent); color: var(--accent-ink); padding: 3px 9px; border-radius: 3px; }
+  .lede { color: var(--muted); font-size: 1.05rem; }
+
+  /* Datos del taller */
+  .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px 16px; }
+  .field { display: grid; gap: 4px; min-width: 0; }
+  input[type="text"], input[type="date"], textarea {
+    width: 100%; font: inherit; font-size: .95rem; color: var(--ink); background: var(--paper);
+    border: 1px solid var(--line); border-radius: 4px; padding: 7px 9px;
+  }
+  textarea { min-height: 64px; resize: vertical; }
+  input:focus-visible, textarea:focus-visible, button:focus-visible, .seg input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  section.block { display: grid; gap: 14px; }
+  .card { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 14px; min-width: 0; }
+
+  /* Resumen */
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .sum { border: 1px solid var(--line); background: var(--paper); border-radius: 6px; padding: 12px; display: grid; gap: 6px; }
+  .sum .code { font-family: var(--font-mono); font-weight: 700; font-size: .8rem; }
+  .sum .pct { font-family: var(--font-display); font-weight: 800; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .sum .bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+  .sum .bar i { display: block; height: 100%; width: 0; background: var(--ok); transition: width .3s; }
+  .sum .meta { font-size: .8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .sum.has-bad { border-color: var(--bad); }
+  .sum.has-bad .bar i { background: var(--bad); }
+
+  /* Control */
+  .control { background: var(--paper); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .control-head { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; align-items: center; padding: 16px 20px; background: var(--soft); border-bottom: 1px solid var(--line); }
+  .control.ccm .control-head { background: var(--soft-ccm); }
+  .code-tag { grid-row: span 2; font-family: var(--font-mono); font-weight: 700; font-size: 1rem; background: var(--accent); color: var(--accent-ink); padding: 8px 10px; border-radius: 4px; }
+  .control.ccm .code-tag { background: var(--ccm); color: var(--paper); }
+  .control-body { padding: 20px; display: grid; gap: 18px; }
+  .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+  .two > div { min-width: 0; display: grid; gap: 6px; align-content: start; }
+  ul.plain { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
+  ul.plain li::marker { color: var(--accent); }
+  .control.ccm ul.plain li::marker { color: var(--ccm); }
+
+  /* Tabla verificación */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  th, td { text-align: left; vertical-align: top; padding: 9px 10px; border-bottom: 1px solid var(--line); }
+  th { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--bg); }
+  tr:last-child td { border-bottom: 0; }
+  td.n { font-family: var(--font-mono); color: var(--muted); width: 2.6em; font-variant-numeric: tabular-nums; }
+  td.ans { width: 160px; white-space: nowrap; }
+  td.obs { min-width: 180px; }
+  td.obs input { padding: 5px 7px; font-size: .88rem; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .seg label { position: relative; cursor: pointer; }
+  .seg input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .seg span { display: block; padding: 4px 10px; font-size: .8rem; font-weight: 700; color: var(--muted); border-right: 1px solid var(--line); }
+  .seg label:last-child span { border-right: 0; }
+  .seg input:checked + span.si { background: var(--ok); color: var(--paper); }
+  .seg input:checked + span.no { background: var(--bad); color: var(--paper); }
+  .seg input:checked + span.na { background: var(--na); color: var(--paper); }
+
+  .note { border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; color: var(--ink); }
+  .control.ccm .note { border-left-color: var(--ccm); }
+
+  /* Caso */
+  .case { background: var(--soft); border-radius: 6px; padding: 18px 20px; display: grid; gap: 10px; }
+  ol.q { margin: 0; padding-left: 1.3em; display: grid; gap: 12px; }
+  ol.q li { display: grid; gap: 6px; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button { font: inherit; font-weight: 700; font-size: .9rem; border-radius: 4px; padding: 8px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--paper); color: var(--ink); }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .status { font-size: .85rem; color: var(--muted); }
+  .confirm { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: .9rem; }
+
+  footer { color: var(--muted); font-size: .85rem; border-top: 1px solid var(--line); padding-top: 14px; }
+
+  @media (max-width: 560px) {
+    .card, .control-body { padding: 14px; }
+    .control-head { padding: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .sum .bar i { transition: none; } }
+  @media print {
+    body { background: #fff; padding: 0; font-size: 12px; }
+    .actions, .no-print { display: none !important; }
+    .control, .card, .case { break-inside: avoid; }
+  }
+</style>
+
+<main class="sheet">
+
+  <header class="top">
+    <div class="rf-badge"><span>RF N°27</span><span>Taller práctico · Controles críticos</span></div>
+    <h1>Taller Práctico de Controles Críticos — Riesgo de Fatalidad N°27</h1>
+    <p class="lede">Interacción entre personas y vehículos o equipos móviles (atropello). Revisión en terreno de los cuatro controles críticos preventivos (CCP) y del control crítico mitigador (CCM).</p>
+  </header>
+
+  <!-- 1. Datos -->
+  <section class="block">
+    <h2>1. Datos del taller</h2>
+    <div class="card">
+      <div class="fields">
+        <div class="field"><label class="label" for="f-empresa">Empresa / Contrato</label><input type="text" id="f-empresa" placeholder="Ej.: Salfa Montajes"></div>
+        <div class="field"><label class="label" for="f-area">Área / Frente de trabajo</label><input type="text" id="f-area" placeholder="Ej.: Chancado 01"></div>
+        <div class="field"><label class="label" for="f-fecha">Fecha</label><input type="date" id="f-fecha"></div>
+        <div class="field"><label class="label" for="f-turno">Turno / Horario</label><input type="text" id="f-turno" placeholder="Día / Noche · 08:00–09:30"></div>
+        <div class="field"><label class="label" for="f-relator">Relator / Facilitador</label><input type="text" id="f-relator"></div>
+        <div class="field"><label class="label" for="f-lugar">Lugar de la práctica</label><input type="text" id="f-lugar" placeholder="Ruta, cruce o patio inspeccionado"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. Objetivo -->
+  <section class="block">
+    <h2>2. Objetivo y metodología</h2>
+    <div class="card">
+      <div class="two">
+        <div>
+          <span class="label">Objetivo general</span>
+          <p>Que los participantes reconozcan, verifiquen en terreno y evalúen la efectividad de los controles críticos del RF N°27, e identifiquen desviaciones y acciones para evitar el atropello de personas por vehículos o equipos móviles.</p>
+        </div>
+        <div>
+          <span class="label">Objetivos específicos</span>
+          <ul class="plain">
+            <li>Explicar el propósito de cada CCP y del CCM.</li>
+            <li>Aplicar la lista de verificación en un área real de trabajo.</li>
+            <li>Registrar hallazgos con evidencia (foto, registro, entrevista).</li>
+            <li>Definir compromisos con responsable y plazo.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="two">
+        <div>
+          <span class="label">Evento no deseado</span>
+          <p>Contacto de una persona con un vehículo liviano, camión o equipo móvil en movimiento, con lesión grave o fatal.</p>
+        </div>
+        <div>
+          <span class="label">Metodología (90 min aprox.)</span>
+          <ul class="plain">
+            <li>15 min · Charla de los controles críticos.</li>
+            <li>40 min · Verificación en terreno por grupos.</li>
+            <li>20 min · Análisis del caso práctico.</li>
+            <li>15 min · Plenario, compromisos y cierre.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note"><strong>Criterio de evaluación:</strong> un control crítico es efectivo solo si <em>todos</em> sus criterios aplicables se cumplen. Un “No” en cualquier ítem significa control crítico <strong>no efectivo</strong>: se detiene la actividad expuesta y se informa a la supervisión.</p>
+    </div>
+  </section>
+
+  <!-- 3. Resumen -->
+  <section class="block">
+    <h2>3. Resumen de cumplimiento</h2>
+    <div class="summary" id="summary"></div>
+  </section>
+
+  <!-- 4. Controles -->
+  <section class="block">
+    <h2>4. Verificación de controles críticos</h2>
+    <div id="controls" style="display:grid;gap:22px"></div>
+  </section>
+
+  <!-- 5. Caso práctico -->
+  <section class="block">
+    <h2>5. Ejercicio práctico: análisis de caso</h2>
+    <div class="case">
+      <span class="label">Caso de estudio</span>
+      <p>Turno noche, 03:40 h. Un camión aljibe retrocede en el patio de chancado para cargar agua. Un mecánico se dirige al taller cruzando por fuera del paso peatonal, porque la baranda de segregación fue retirada días antes por un trabajo y no se repuso. La luminaria del sector está quemada. El trabajador usa un chaleco reflectante sucio y con las cintas desprendidas. La alarma de retroceso del camión fue desconectada “por ruido” y el sistema de proximidad no fue probado en el pre-uso. El trabajador no tiene radio y el conductor no tiene señalero. El trabajador es golpeado por la parte trasera del camión. La brigada demora 25 minutos en llegar porque nadie conocía el número de emergencia del área.</p>
+    </div>
+    <div class="card">
+      <ol class="q">
+        <li><label for="c-q1">¿Qué controles críticos (CCP1 a CCP4 y CCM1) fallaron? Indique la evidencia del caso para cada uno.</label><textarea id="c-q1"></textarea></li>
+        <li><label for="c-q2">¿Cuál de esas fallas habría bastado, por sí sola, para evitar el atropello si el control hubiese funcionado? Justifique.</label><textarea id="c-q2"></textarea></li>
+        <li><label for="c-q3">¿Qué condiciones del caso se repiten en su área de trabajo hoy?</label><textarea id="c-q3"></textarea></li>
+        <li><label for="c-q4">¿Qué debió hacer el supervisor al retirar la baranda de segregación? ¿Y el conductor al detectar la alarma desconectada?</label><textarea id="c-q4"></textarea></li>
+        <li><label for="c-q5">Proponga tres acciones concretas, con responsable, para que este evento no ocurra en su área.</label><textarea id="c-q5"></textarea></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 6. Preguntas de cierre -->
+  <section class="block">
+    <h2>6. Preguntas de comprensión</h2>
+    <div class="card">
+      <ol class="q">
+        <li><label for="e-q1">¿Cuál es la diferencia entre un control crítico preventivo (CCP) y un control crítico mitigador (CCM)?</label><textarea id="e-q1"></textarea></li>
+        <li><label for="e-q2">Antes de acercarse a un equipo móvil, ¿qué pasos de comunicación debe cumplir?</label><textarea id="e-q2"></textarea></li>
+        <li><label for="e-q3">Si el sistema antiatropello de su equipo falla durante el turno, ¿qué hace?</label><textarea id="e-q3"></textarea></li>
+        <li><label for="e-q4">¿Cuál es el número o canal de emergencia de su área y quién activa la respuesta?</label><textarea id="e-q4"></textarea></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 7. Compromisos -->
+  <section class="block">
+    <h2>7. Hallazgos y compromisos</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>N°</th><th>Control</th><th>Hallazgo / desviación</th><th>Acción correctiva</th><th>Responsable</th><th>Plazo</th></tr></thead>
+        <tbody id="commit-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 8. Asistencia -->
+  <section class="block">
+    <h2>8. Registro de participantes</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>N°</th><th>Nombre</th><th>RUT</th><th>Cargo</th><th>Empresa</th><th>Firma</th></tr></thead>
+        <tbody id="att-rows"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="actions no-print">
+    <button type="button" id="btn-save" class="primary">Guardar borrador</button>
+    <button type="button" id="btn-clear">Limpiar formulario</button>
+    <span class="confirm" id="confirm-clear" hidden>¿Borrar todas las respuestas? <button type="button" id="btn-clear-yes">Sí, borrar</button><button type="button" id="btn-clear-no">Cancelar</button></span>
+    <span class="status" id="status">El borrador se guarda solo en este navegador.</span>
+  </div>
+
+  <footer>
+    Referencias: estándar de control de fatalidades de la faena para el RF N°27, DS 594 (condiciones sanitarias y ambientales, iluminación), DS 132 (seguridad minera) y Ley 16.744. Ajuste los criterios al estándar vigente de su mandante.
+  </footer>
+</main>
+
+<script>
+const CONTROLS = [
+  {
+    code: "CCP1", type: "ccp",
+    title: "Rutas vehiculares y peatonales conforme a diseño",
+    sub: "Segregación, señalética e iluminación",
+    objetivo: "Mantener separadas físicamente la circulación de personas y la de vehículos y equipos, con rutas, cruces y zonas definidas en un diseño aprobado, señalizadas e iluminadas.",
+    falla: ["Atajos peatonales por fuera de la ruta definida.", "Barreras retiradas por trabajos y no repuestas.", "Señalética cubierta de polvo, dañada o desactualizada.", "Luminarias quemadas en cruces o patios.", "Cambios de layout sin actualizar el plano de tránsito."],
+    items: [
+      "Existe un plano o layout de tránsito del área, aprobado y vigente, y coincide con lo que se ve en terreno.",
+      "Las vías peatonales están segregadas físicamente de las vehiculares (barreras, barandas, New Jersey, cadenas).",
+      "Los cruces peatonales están definidos, demarcados y señalizados, con prioridad de paso clara.",
+      "La señalética vertical está instalada, limpia y legible: velocidad máxima, PARE, ceda el paso, prohibido el tránsito peatonal.",
+      "La demarcación horizontal (pasos, líneas de detención, zonas de exclusión) está visible.",
+      "Las zonas de estacionamiento, carga/descarga y retroceso están definidas y señalizadas.",
+      "La iluminación de rutas, cruces y frentes de trabajo es suficiente en turno noche y las luminarias funcionan.",
+      "Las personas usan solo las rutas peatonales y cruces habilitados (observación en terreno)."
+    ]
+  },
+  {
+    code: "CCP2", type: "ccp",
+    title: "Sistema antiatropello y advertencia de proximidad",
+    sub: "Detección, alarmas y control de puntos ciegos",
+    objetivo: "Advertir al conductor y a las personas cuando hay presencia humana en la zona de riesgo del vehículo o equipo, y cubrir los puntos ciegos.",
+    falla: ["Alarma de retroceso desconectada o con volumen reducido.", "Sistema de proximidad sin prueba de pre-uso.", "Tag personal sin carga o no portado.", "Equipo operando con el sistema en falla.", "Cámaras sucias o espejos dañados."],
+    items: [
+      "El vehículo o equipo tiene sistema de detección de proximidad (radar, sensores, tag, cámara) según el estándar del área.",
+      "La alarma sonora de retroceso funciona y es audible en el entorno de trabajo.",
+      "La baliza o luz estroboscópica funciona.",
+      "Las cámaras y espejos cubren los puntos ciegos, están limpios y sin daño.",
+      "La prueba funcional del sistema está registrada en el check list de pre-uso del turno.",
+      "El personal expuesto porta su dispositivo o tag personal operativo y con carga (cuando aplica).",
+      "El sistema no está puenteado ni desactivado; si falla, el equipo se detiene y se reporta.",
+      "Existe registro de mantención o calibración vigente del sistema.",
+      "El conductor sabe interpretar las alertas y cómo responder a ellas (entrevista)."
+    ]
+  },
+  {
+    code: "CCP3", type: "ccp",
+    title: "Alta visibilidad en personas, vehículos y equipos",
+    sub: "Ver y ser visto, de día y de noche",
+    objetivo: "Asegurar que personas, vehículos y equipos sean detectados a tiempo, mediante ropa de alta visibilidad, iluminación y elementos de identificación.",
+    falla: ["Chaleco sucio, desteñido o con cintas desprendidas.", "Chaleco cubierto por chaqueta o arnés.", "Camionetas sin pértiga o sin baliza en área mina.", "Luces apagadas durante el día.", "Equipos detenidos sin conos ni señalización."],
+    items: [
+      "Todo el personal en terreno usa ropa o chaleco de alta visibilidad (fluorescente y retrorreflectante) certificado.",
+      "La prenda está limpia, en buen estado y no queda cubierta por otra ropa o elementos.",
+      "Los vehículos livianos cuentan con baliza, pértiga con banderín y luz (cuando el área lo exige).",
+      "Vehículos y equipos circulan con luces encendidas en todo momento.",
+      "Vehículos y equipos tienen cintas reflectantes en contorno y parte trasera.",
+      "Los equipos detenidos o estacionados están señalizados (conos, triángulos, baliza)."
+    ]
+  },
+  {
+    code: "CCP4", type: "ccp",
+    title: "Comunicación bidireccional efectiva entre personal y conductores",
+    sub: "Radio, contacto visual, señalero y autorización",
+    objetivo: "Que ninguna persona se aproxime a un vehículo o equipo, y que ningún conductor mueva su equipo, sin comunicación confirmada en ambos sentidos.",
+    falla: ["Acercarse al equipo sin autorización del operador.", "Radios sin batería o en canal equivocado.", "Retroceso sin señalero en espacio restringido.", "Mensajes no confirmados (“no hay copiado”).", "Zonas sin cobertura radial no identificadas."],
+    items: [
+      "Conductores y personal que interactúa con equipos tienen radio operativa en el canal definido para el área.",
+      "Se realiza prueba de radio al inicio del turno.",
+      "Existe y se aplica el protocolo de aproximación: contacto radial y visual con el operador y autorización antes de acercarse.",
+      "Los mensajes se confirman (el receptor repite o responde “copiado”).",
+      "En retrocesos y espacios restringidos hay señalero designado, capacitado e identificado.",
+      "Las señales manuales y el código de bocina están estandarizados y el personal los conoce (ej.: 1 toque detención/partida, 2 avance, 3 retroceso; según estándar del área).",
+      "Las zonas sin cobertura radial están identificadas y tienen una medida alternativa."
+    ]
+  },
+  {
+    code: "CCM1", type: "ccm",
+    title: "Capacidad de respuesta ante emergencia",
+    sub: "Control crítico mitigador",
+    objetivo: "Reducir las consecuencias de un atropello mediante una respuesta oportuna: aviso, asegurar la escena, primeros auxilios y traslado a atención médica.",
+    falla: ["Nadie conoce el número o canal de emergencia.", "Botiquín o camilla incompletos o sin inspección.", "Acceso de ambulancia bloqueado.", "Sin simulacro del escenario atropello.", "Mover al lesionado sin evaluación."],
+    items: [
+      "El plan de emergencia del área incluye el escenario de atropello.",
+      "El número o canal radial de emergencia está publicado y el personal lo conoce (entrevista).",
+      "Hay personal capacitado en primeros auxilios en el turno.",
+      "Botiquín, camilla, inmovilizadores y DEA están disponibles, completos e inspeccionados.",
+      "El acceso de ambulancia o equipo de rescate al área está despejado y el tiempo de respuesta está definido.",
+      "Se realizó un simulacro del escenario en el período y sus observaciones están cerradas.",
+      "El personal conoce la secuencia: detener equipos, asegurar y aislar la escena, avisar, no mover al lesionado, asistir y preservar evidencia."
+    ]
+  }
+];
+
+const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function renderControls() {
+  const host = document.getElementById("controls");
+  host.innerHTML = CONTROLS.map(c => {
+    const rows = c.items.map((it, i) => {
+      const id = `${c.code}-${i + 1}`;
+      return `<tr>
+        <td class="n">${i + 1}</td>
+        <td>${esc(it)}</td>
+        <td class="ans"><div class="seg" role="radiogroup" aria-label="Respuesta ítem ${i + 1} ${c.code}">
+          <label><input type="radio" name="${id}" id="${id}-si" value="si"><span class="si">Sí</span></label>
+          <label><input type="radio" name="${id}" id="${id}-no" value="no"><span class="no">No</span></label>
+          <label><input type="radio" name="${id}" id="${id}-na" value="na"><span class="na">N/A</span></label>
+        </div></td>
+        <td class="obs"><input type="text" id="${id}-obs" aria-label="Observación ítem ${i + 1}" placeholder="Evidencia / observación"></td>
+      </tr>`;
+    }).join("");
+    return `<article class="control ${c.type}" id="${c.code}">
+      <div class="control-head">
+        <span class="code-tag">${c.code}</span>
+        <h3>${esc(c.title)}</h3>
+        <span class="label">${esc(c.sub)}</span>
+      </div>
+      <div class="control-body">
+        <div class="two">
+          <div><span class="label">Objetivo del control</span><p>${esc(c.objetivo)}</p></div>
+          <div><span class="label">Fallas típicas a buscar</span><ul class="plain">${c.falla.map(f => `<li>${esc(f)}</li>`).join("")}</ul></div>
+        </div>
+        <div class="table-wrap"><table>
+          <thead><tr><th>N°</th><th>Criterio de verificación</th><th>Cumple</th><th>Observación</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table></div>
+        <div class="field"><label class="label" for="${c.code}-concl">Conclusión del grupo sobre ${c.code}</label><textarea id="${c.code}-concl" placeholder="¿El control es efectivo? ¿Qué falta?"></textarea></div>
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function renderTables() {
+  const opts = CONTROLS.map(c => c.code).join(" / ");
+  document.getElementById("commit-rows").innerHTML = Array.from({length: 5}, (_, i) => `<tr>
+    <td class="n">${i + 1}</td>
+    <td><input type="text" id="cm-${i}-ctrl" aria-label="Control" placeholder="${i === 0 ? opts : ""}"></td>
+    <td><input type="text" id="cm-${i}-hall" aria-label="Hallazgo"></td>
+    <td><input type="text" id="cm-${i}-acc" aria-label="Acción"></td>
+    <td><input type="text" id="cm-${i}-resp" aria-label="Responsable"></td>
+    <td><input type="date" id="cm-${i}-plazo" aria-label="Plazo"></td>
+  </tr>`).join("");
+  document.getElementById("att-rows").innerHTML = Array.from({length: 12}, (_, i) => `<tr>
+    <td class="n">${i + 1}</td>
+    <td><input type="text" id="at-${i}-nom" aria-label="Nombre"></td>
+    <td><input type="text" id="at-${i}-rut" aria-label="RUT" placeholder="${i === 0 ? "12345678-9" : ""}"></td>
+    <td><input type="text" id="at-${i}-cargo" aria-label="Cargo"></td>
+    <td><input type="text" id="at-${i}-emp" aria-label="Empresa"></td>
+    <td style="min-width:120px"></td>
+  </tr>`).join("");
+}
+
+function updateSummary() {
+  const host = document.getElementById("summary");
+  host.innerHTML = CONTROLS.map(c => {
+    let si = 0, no = 0, na = 0;
+    c.items.forEach((_, i) => {
+      const v = document.querySelector(`input[name="${c.code}-${i + 1}"]:checked`)?.value;
+      if (v === "si") si++; else if (v === "no") no++; else if (v === "na") na++;
+    });
+    const aplica = si + no;
+    const pct = aplica ? Math.round(si / aplica * 100) : null;
+    const pend = c.items.length - si - no - na;
+    const estado = no > 0 ? "No efectivo" : (pend === 0 && aplica ? "Efectivo" : "En revisión");
+    return `<a class="sum ${no ? "has-bad" : ""}" href="#${c.code}" style="color:inherit;text-decoration:none">
+      <span class="code">${c.code}</span>
+      <span class="pct">${pct === null ? "—" : pct + "%"}</span>
+      <span class="bar"><i style="width:${pct || 0}%"></i></span>
+      <span class="meta">${estado} · Sí ${si} · No ${no} · N/A ${na} · Pend. ${pend}</span>
+    </a>`;
+  }).join("");
+}
+
+const KEY = "taller-rf27-borrador";
+function allFields() { return document.querySelectorAll("main input, main textarea"); }
+function save() {
+  const data = {};
+  allFields().forEach(el => {
+    if (el.type === "radio") { if (el.checked) data[el.name] = el.value; }
+    else if (el.id && el.value) data[el.id] = el.value;
+  });
+  try { localStorage.setItem(KEY, JSON.stringify(data)); setStatus("Borrador guardado en este navegador."); }
+  catch { setStatus("No se pudo guardar el borrador en este navegador."); }
+}
+function load() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch { data = {}; }
+  allFields().forEach(el => {
+    if (el.type === "radio") el.checked = data[el.name] === el.value;
+    else if (el.id && data[el.id] != null) el.value = data[el.id];
+  });
+}
+function setStatus(t) { document.getElementById("status").textContent = t; }
+
+renderControls();
+renderTables();
+load();
+updateSummary();
+
+let timer;
+document.querySelector("main").addEventListener("input", () => {
+  updateSummary();
+  clearTimeout(timer); timer = setTimeout(save, 600);
+});
+document.getElementById("btn-save").addEventListener("click", save);
+document.getElementById("btn-clear").addEventListener("click", () => { document.getElementById("confirm-clear").hidden = false; });
+document.getElementById("btn-clear-no").addEventListener("click", () => { document.getElementById("confirm-clear").hidden = true; });
+document.getElementById("btn-clear-yes").addEventListener("click", () => {
+  allFields().forEach(el => { if (el.type === "radio") el.checked = false; else el.value = ""; });
+  try { localStorage.removeItem(KEY); } catch {}
+  document.getElementById("confirm-clear").hidden = true;
+  updateSummary(); setStatus("Formulario limpio.");
+});
+</script>
