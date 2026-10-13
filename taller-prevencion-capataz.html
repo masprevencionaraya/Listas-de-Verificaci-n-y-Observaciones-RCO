@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taller Prevención Capataz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
+    details[open] .chevron { transform: rotate(180deg); }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      header, .no-print { display: none !important; }
+      details { break-inside: avoid; }
+      details:not([open]) > *:not(summary) { display: block !important; }
+      .print-light, .print-light * { background: #fff !important; color: #000 !important; border-color: #999 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-10">
+
+  <!-- Encabezado -->
+  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
+    <div class="max-w-2xl mx-auto flex justify-between items-center gap-3">
+      <div>
+        <h1 class="font-bold text-lg text-amber-500">SALFA MONTAJES</h1>
+        <p class="text-xs text-slate-400">Taller de Prevención de Riesgos · Capataces</p>
+      </div>
+      <button onclick="openAllAndPrint()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-3 py-2 rounded-lg text-xs transition shadow-lg">
+        Imprimir
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-2xl mx-auto p-4 space-y-6 print-light">
+
+    <!-- Portada -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4">
+      <div>
+        <p class="text-xs font-semibold text-amber-400 uppercase tracking-wide">Taller práctico · 3 horas</p>
+        <h2 class="text-2xl font-bold text-white mt-1">El capataz como líder de la prevención en terreno</h2>
+        <p class="text-sm text-slate-300 mt-2">
+          El capataz es la primera línea de supervisión: es quien asigna las tareas, ve las condiciones reales
+          y puede detener un trabajo antes de que ocurra un accidente. Este taller entrega herramientas concretas
+          para planificar, controlar y liderar el trabajo seguro de su cuadrilla.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+        <div class="bg-slate-900 p-3 rounded-lg">
+          <p class="text-xs text-slate-400">Dirigido a</p>
+          <p class="text-slate-100">Capataces, jefes de cuadrilla y líderes de frente</p>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-lg">
+          <p class="text-xs text-slate-400">Relator</p>
+          <p class="text-slate-100">Experto/a en Prevención de Riesgos</p>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-lg">
+          <p class="text-xs text-slate-400">Participantes</p>
+          <p class="text-slate-100">8 a 15 personas</p>
+        </div>
+        <div class="bg-slate-900 p-3 rounded-lg">
+          <p class="text-xs text-slate-400">Materiales</p>
+          <p class="text-slate-100">Formatos ART, lista pre-uso, papelógrafo, plumones, EPP de muestra</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Objetivos -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-3">
+      <h2 class="text-lg font-bold text-amber-400">Objetivos del taller</h2>
+      <p class="text-xs text-slate-400">Al finalizar, el capataz será capaz de:</p>
+      <ol class="list-decimal list-inside space-y-2 text-sm text-slate-200">
+        <li>Reconocer sus responsabilidades legales y operativas en la prevención de accidentes.</li>
+        <li>Identificar peligros y aplicar la jerarquía de controles en las tareas de su cuadrilla.</li>
+        <li>Elaborar y revisar un Análisis de Riesgo del Trabajo (ART) en terreno.</li>
+        <li>Verificar los controles críticos de los riesgos de mayor potencial de daño.</li>
+        <li>Realizar observaciones de conducta y entregar retroalimentación efectiva.</li>
+        <li>Actuar correctamente ante un incidente y detener un trabajo inseguro.</li>
+      </ol>
+    </section>
+
+    <!-- Agenda -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-3">
+      <h2 class="text-lg font-bold text-amber-400">Agenda</h2>
+      <div class="divide-y divide-slate-700 text-sm">
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">00:00–00:15</span><span>Bienvenida, encuadre y dinámica de apertura</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">00:15–00:35</span><span>Módulo 1 · Rol y responsabilidades del capataz</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">00:35–01:00</span><span>Módulo 2 · Peligros, riesgos y jerarquía de controles</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">01:00–01:30</span><span>Módulo 3 · Riesgos críticos y controles críticos</span></div>
+        <div class="flex gap-3 py-2"><span class="text-slate-400 font-mono w-24 shrink-0">01:30–01:40</span><span class="text-slate-400">Pausa</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">01:40–02:10</span><span>Módulo 4 · Herramientas en terreno: charla, ART, pre-uso, observaciones</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">02:10–02:30</span><span>Módulo 5 · Liderazgo, comunicación y detención del trabajo</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">02:30–02:45</span><span>Módulo 6 · Qué hacer ante un incidente</span></div>
+        <div class="flex gap-3 py-2"><span class="text-amber-400 font-mono w-24 shrink-0">02:45–03:00</span><span>Evaluación, compromisos y cierre</span></div>
+      </div>
+    </section>
+
+    <!-- Apertura -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">15 min</p>
+          <h2 class="text-base font-bold text-white">Apertura · ¿Por qué estamos aquí?</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-3 text-sm text-slate-200">
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Dinámica: "El día que casi"</p>
+          <p>Cada participante cuenta en 1 minuto una situación en que él o un compañero estuvo cerca de accidentarse.
+            El relator anota en el papelógrafo: ¿qué tarea era?, ¿qué falló?, ¿quién pudo haberlo evitado?</p>
+        </div>
+        <p><strong>Mensaje clave:</strong> casi todos los relatos tienen algo en común: alguien vio el riesgo y no se detuvo
+          el trabajo. El capataz es la persona con más oportunidad de cambiar ese final.</p>
+        <p><strong>Acuerdos del taller:</strong> celulares en silencio, todas las opiniones valen, lo que se cuenta aquí es para aprender, no para culpar.</p>
+      </div>
+    </details>
+
+    <!-- Módulo 1 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 1 · 20 min</p>
+          <h2 class="text-base font-bold text-white">Rol y responsabilidades del capataz</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <p>El capataz representa a la empresa frente a su cuadrilla. Cuando da una instrucción, está ejerciendo el deber
+          de protección del empleador y debe asegurarse de que el trabajo se haga en condiciones seguras.</p>
+
+        <div>
+          <h3 class="text-sm font-semibold text-amber-400 mb-2">Marco legal de referencia (Chile)</h3>
+          <ul class="space-y-2">
+            <li class="bg-slate-900 p-3 rounded-lg"><strong>Código del Trabajo, art. 184:</strong> el empleador debe tomar todas las medidas necesarias para proteger eficazmente la vida y salud de los trabajadores.</li>
+            <li class="bg-slate-900 p-3 rounded-lg"><strong>Código del Trabajo, art. 184 bis:</strong> ante un riesgo grave e inminente, el trabajador puede interrumpir sus labores y abandonar el lugar.</li>
+            <li class="bg-slate-900 p-3 rounded-lg"><strong>Ley 16.744:</strong> seguro contra accidentes del trabajo y enfermedades profesionales; obliga a la empresa a implementar medidas de higiene y seguridad y a denunciar los accidentes.</li>
+            <li class="bg-slate-900 p-3 rounded-lg"><strong>D.S. 44 (2024):</strong> reglamento de gestión preventiva de los riesgos laborales; exige identificar peligros, evaluar riesgos, informar a los trabajadores y capacitarlos.</li>
+            <li class="bg-slate-900 p-3 rounded-lg"><strong>Reglamento Interno de Orden, Higiene y Seguridad</strong> y los estándares del mandante de la faena.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-semibold text-amber-400 mb-2">Lo que se espera del capataz, todos los días</h3>
+          <ul class="list-disc list-inside space-y-1">
+            <li>Planificar la tarea y asignar solo a personal capacitado y autorizado.</li>
+            <li>Dirigir la charla diaria y el ART antes de iniciar.</li>
+            <li>Verificar herramientas, equipos y EPP (lista pre-uso).</li>
+            <li>Estar presente en terreno y corregir en el momento.</li>
+            <li>Detener el trabajo cuando cambian las condiciones o falta un control.</li>
+            <li>Reportar todo incidente, incluso los que no tuvieron lesionados.</li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Pregunta al grupo</p>
+          <p>"Si un trabajador de su cuadrilla se accidenta haciendo una tarea que usted le dio, sin el EPP adecuado, ¿quién responde?"
+            Guiar la conversación: la responsabilidad es compartida, pero quien da la orden y tolera la condición tiene un rol central.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Módulo 2 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 2 · 25 min</p>
+          <h2 class="text-base font-bold text-white">Peligros, riesgos y jerarquía de controles</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="bg-slate-900 p-3 rounded-lg">
+            <p class="text-xs font-semibold text-amber-400">Peligro</p>
+            <p>Lo que puede causar daño. <em>Ej.: una carga suspendida.</em></p>
+          </div>
+          <div class="bg-slate-900 p-3 rounded-lg">
+            <p class="text-xs font-semibold text-amber-400">Riesgo</p>
+            <p>La probabilidad de que ese daño ocurra y su gravedad. <em>Ej.: ser golpeado o aplastado por la carga.</em></p>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="text-sm font-semibold text-amber-400 mb-2">Jerarquía de controles (de más a menos eficaz)</h3>
+          <ol class="space-y-2">
+            <li class="flex gap-3 bg-emerald-900/40 p-3 rounded-lg"><span class="font-bold text-emerald-400">1</span><span><strong>Eliminar</strong> el peligro. Ej.: prearmar en piso para no trabajar en altura.</span></li>
+            <li class="flex gap-3 bg-emerald-900/30 p-3 rounded-lg"><span class="font-bold text-emerald-400">2</span><span><strong>Sustituir</strong> por algo menos peligroso. Ej.: herramienta inalámbrica en vez de eléctrica con extensión.</span></li>
+            <li class="flex gap-3 bg-amber-900/30 p-3 rounded-lg"><span class="font-bold text-amber-400">3</span><span><strong>Controles de ingeniería.</strong> Ej.: barandas, protecciones de máquinas, líneas de vida.</span></li>
+            <li class="flex gap-3 bg-amber-900/20 p-3 rounded-lg"><span class="font-bold text-amber-400">4</span><span><strong>Controles administrativos.</strong> Ej.: procedimientos, permisos de trabajo, segregación, señalización.</span></li>
+            <li class="flex gap-3 bg-red-900/30 p-3 rounded-lg"><span class="font-bold text-red-400">5</span><span><strong>EPP.</strong> La última barrera: no evita el evento, solo reduce la lesión.</span></li>
+          </ol>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Ejercicio en grupos (10 min)</p>
+          <p>Cada grupo recibe una tarea real de la obra (ej.: montaje de una viga, corte con esmeril angular, traslado de planchas).
+            Deben listar 3 peligros y proponer al menos un control de cada nivel de la jerarquía. Presentan en 2 minutos.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Módulo 3 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 3 · 30 min</p>
+          <h2 class="text-base font-bold text-white">Riesgos críticos y controles críticos</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <p>Un <strong>riesgo crítico</strong> es aquel que puede causar una fatalidad o lesión grave. Su <strong>control crítico</strong>
+          es la barrera que, si falta, deja el accidente a un paso. Si un control crítico no está, <strong>el trabajo no parte</strong>.</p>
+
+        <div class="space-y-3">
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Trabajo en altura (≥ 1,8 m)</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Arnés de cuerpo completo inspeccionado y con 100% de conexión.</li>
+              <li>Punto de anclaje o línea de vida certificada.</li>
+              <li>Andamio con tarjeta verde y plataforma completa con barandas.</li>
+              <li>Área inferior segregada; herramientas amarradas.</li>
+            </ul>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Izaje de cargas</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Plan de izaje y operador/rigger acreditados.</li>
+              <li>Elementos de izaje inspeccionados, con color del mes y capacidad conocida.</li>
+              <li>Área de exclusión: nadie bajo la carga suspendida.</li>
+              <li>Uso de vientos (cuerdas guía); detener con viento fuera de rango.</li>
+            </ul>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Energías peligrosas</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Aislamiento, bloqueo y tarjeta personal de cada trabajador.</li>
+              <li>Verificación de energía cero antes de intervenir.</li>
+              <li>Considerar energía eléctrica, hidráulica, neumática, mecánica y térmica.</li>
+            </ul>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Trabajos en caliente</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Permiso de trabajo en caliente vigente.</li>
+              <li>Retiro de combustibles y protección con mantas ignífugas.</li>
+              <li>Extintor operativo y vigía de fuego durante y después de la tarea.</li>
+            </ul>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Espacios confinados</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Permiso de ingreso y medición de atmósfera (O₂, gases inflamables y tóxicos).</li>
+              <li>Vigía permanente en el acceso y plan de rescate definido.</li>
+            </ul>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-white">Interacción con equipos móviles</h3>
+            <ul class="list-disc list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Segregación peatón–equipo y contacto visual con el operador.</li>
+              <li>No ubicarse en puntos ciegos ni en la línea de fuego.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Ejercicio: "¿Parte o no parte?" (10 min)</p>
+          <p>El relator muestra fotos o describe escenas de terreno. Los participantes levantan tarjeta
+            <span class="text-emerald-400 font-semibold">verde</span> (parte) o
+            <span class="text-red-400 font-semibold">roja</span> (no parte) y justifican qué control crítico falta.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Módulo 4 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 4 · 30 min</p>
+          <h2 class="text-base font-bold text-white">Herramientas preventivas en terreno</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <div class="space-y-3">
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-amber-400">Charla diaria (5–10 min)</h3>
+            <p class="text-slate-300 mt-1">Breve, al inicio del turno y sobre la tarea del día. Estructura sugerida:
+              <strong>qué haremos → qué nos puede pasar → cómo lo controlamos → quién hace qué</strong>.
+              Termine preguntando, no solo informando.</p>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-amber-400">ART · Análisis de Riesgo del Trabajo</h3>
+            <p class="text-slate-300 mt-1">Se hace en el lugar de trabajo, con la cuadrilla que ejecutará la tarea:</p>
+            <ol class="list-decimal list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Dividir la tarea en pasos.</li>
+              <li>Identificar los peligros de cada paso.</li>
+              <li>Definir los controles y su responsable.</li>
+              <li>Verificar que los controles críticos estén presentes.</li>
+              <li>Firmar todos; rehacer si cambian las condiciones.</li>
+            </ol>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-amber-400">Lista de verificación pre-uso</h3>
+            <p class="text-slate-300 mt-1">Antes de usar herramientas y equipos: cables y enchufes sin daño, cinta del mes
+              (código de colores), protecciones instaladas y EPP específico disponible. Usar la
+              <a href="gemini-code-1787107244296.html" class="text-amber-400 underline">lista digital de pre-uso</a>.
+              Un ítem "No cumple" significa que la herramienta se retira y se etiqueta.</p>
+          </div>
+          <div class="bg-slate-900 p-4 rounded-lg">
+            <h3 class="font-semibold text-amber-400">Observación de conducta</h3>
+            <p class="text-slate-300 mt-1">Observar a un trabajador realizando su tarea durante unos minutos, registrar conductas
+              seguras y en riesgo, y conversar en el momento:</p>
+            <ol class="list-decimal list-inside text-slate-300 mt-1 space-y-0.5">
+              <li>Presentarse y explicar que es una observación preventiva, no un castigo.</li>
+              <li>Reconocer primero lo que hace bien.</li>
+              <li>Preguntar por la conducta en riesgo: "¿qué podría pasar si…?".</li>
+              <li>Acordar juntos la forma segura y registrar la observación.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Ejercicio práctico (15 min)</p>
+          <p>En parejas: uno es capataz y otro trabajador. El capataz completa un ART para la tarea asignada en el Módulo 2
+            y luego hace una observación de conducta simulada. El grupo retroalimenta usando los 4 pasos.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Módulo 5 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 5 · 20 min</p>
+          <h2 class="text-base font-bold text-white">Liderazgo, comunicación y detención del trabajo</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <ul class="space-y-2">
+          <li class="bg-slate-900 p-3 rounded-lg"><strong>Dar el ejemplo:</strong> la cuadrilla hace lo que el capataz hace, no lo que dice. Si usted no usa el arnés, nadie lo usará.</li>
+          <li class="bg-slate-900 p-3 rounded-lg"><strong>Lo que se tolera, se repite:</strong> pasar por alto una conducta en riesgo es aprobarla.</li>
+          <li class="bg-slate-900 p-3 rounded-lg"><strong>Escuchar:</strong> el trabajador conoce detalles de la tarea que el capataz no ve. Pregunte "¿qué te preocupa de este trabajo?".</li>
+          <li class="bg-slate-900 p-3 rounded-lg"><strong>Producción y seguridad no compiten:</strong> un accidente detiene la obra mucho más tiempo que una pausa para corregir.</li>
+        </ul>
+
+        <div class="bg-red-900/30 p-4 rounded-lg border border-red-500/40">
+          <h3 class="font-semibold text-red-300">Detener el trabajo: cuándo y cómo</h3>
+          <p class="text-slate-200 mt-1">Detenga si falta un control crítico, cambian las condiciones (clima, iluminación, personal),
+            aparece un peligro no evaluado o alguien no sabe cómo hacer la tarea.</p>
+          <p class="text-slate-200 mt-2"><strong>Pasos:</strong> detener → asegurar el área → informar al supervisor y prevención →
+            corregir y actualizar el ART → reanudar solo cuando esté controlado.</p>
+          <p class="text-slate-200 mt-2">Reconozca públicamente a quien detiene un trabajo. Nadie debe recibir represalias por hacerlo.</p>
+        </div>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Juego de roles (10 min)</p>
+          <p>El jefe de terreno presiona para terminar un izaje con viento fuerte. El capataz debe detenerlo explicando el riesgo
+            con argumentos claros y proponiendo una alternativa. El grupo comenta qué funcionó.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Módulo 6 -->
+    <details class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden">
+      <summary class="p-5 flex justify-between items-center">
+        <div>
+          <p class="text-xs text-slate-400">Módulo 6 · 15 min</p>
+          <h2 class="text-base font-bold text-white">Qué hacer ante un incidente</h2>
+        </div>
+        <span class="chevron text-amber-400 transition">▼</span>
+      </summary>
+      <div class="px-5 pb-5 space-y-4 text-sm text-slate-200">
+        <ol class="space-y-2">
+          <li class="flex gap-3 bg-slate-900 p-3 rounded-lg"><span class="font-bold text-amber-400">1</span><span><strong>Controlar la escena:</strong> detener equipos, evitar más lesionados, no exponerse.</span></li>
+          <li class="flex gap-3 bg-slate-900 p-3 rounded-lg"><span class="font-bold text-amber-400">2</span><span><strong>Atender al lesionado:</strong> activar el plan de emergencia, llamar a la brigada o al policlínico; no mover si hay sospecha de lesión grave.</span></li>
+          <li class="flex gap-3 bg-slate-900 p-3 rounded-lg"><span class="font-bold text-amber-400">3</span><span><strong>Avisar de inmediato</strong> al supervisor y a prevención de riesgos.</span></li>
+          <li class="flex gap-3 bg-slate-900 p-3 rounded-lg"><span class="font-bold text-amber-400">4</span><span><strong>Preservar el lugar</strong> y las evidencias; en accidentes graves o fatales, suspender la faena afectada según el procedimiento vigente.</span></li>
+          <li class="flex gap-3 bg-slate-900 p-3 rounded-lg"><span class="font-bold text-amber-400">5</span><span><strong>Apoyar la investigación:</strong> relatar los hechos tal como ocurrieron, buscar causas y no culpables.</span></li>
+        </ol>
+        <p class="bg-slate-900 p-3 rounded-lg">Los <strong>incidentes sin lesión</strong> (cuasi accidentes) también se reportan: son avisos gratuitos de un accidente que todavía no ocurre.</p>
+
+        <div class="bg-slate-900 p-3 rounded-lg border-l-4 border-amber-500">
+          <p class="text-xs font-semibold text-amber-400 mb-1">Ejercicio: los 5 porqués</p>
+          <p>Con un caso contado en la apertura, preguntar "¿por qué?" cinco veces hasta llegar a una causa que el capataz pueda corregir.</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- Evaluación -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-4 no-print">
+      <div class="border-b border-slate-700 pb-3">
+        <h2 class="text-lg font-bold text-amber-400">Evaluación final</h2>
+        <p class="text-xs text-slate-400">10 preguntas. Aprobación con 8 respuestas correctas.</p>
+      </div>
+      <form id="quiz" onsubmit="gradeQuiz(event)" class="space-y-4"></form>
+      <div id="quiz-result" class="hidden p-4 rounded-lg text-sm font-semibold"></div>
+    </section>
+
+    <!-- Compromisos -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-3">
+      <h2 class="text-lg font-bold text-amber-400">Cierre · Mi compromiso</h2>
+      <p class="text-sm text-slate-300">Cada capataz escribe y comparte en voz alta un compromiso concreto para la próxima semana.</p>
+      <div class="bg-slate-900 p-3 rounded-lg text-sm text-slate-300 italic">
+        Ej.: "Haré la charla diaria en el frente de trabajo y terminaré con una pregunta a la cuadrilla."<br>
+        Ej.: "Realizaré dos observaciones de conducta por semana y las registraré."
+      </div>
+      <div class="space-y-2">
+        <div class="border-b border-slate-600 h-8"></div>
+        <div class="border-b border-slate-600 h-8"></div>
+      </div>
+    </section>
+
+    <!-- Asistencia -->
+    <section class="bg-slate-800 p-6 rounded-xl border border-slate-700 space-y-3">
+      <h2 class="text-lg font-bold text-amber-400">Registro de asistencia</h2>
+      <p class="text-xs text-slate-400">Fecha: ____ / ____ / ________ &nbsp; Lugar: ______________________ &nbsp; Relator: ______________________</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="text-left text-slate-300">
+              <th class="border border-slate-700 p-2 w-8">N°</th>
+              <th class="border border-slate-700 p-2">Nombre</th>
+              <th class="border border-slate-700 p-2">RUT</th>
+              <th class="border border-slate-700 p-2">Nota</th>
+              <th class="border border-slate-700 p-2">Firma</th>
+            </tr>
+          </thead>
+          <tbody id="attendance"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // --- FILAS DE ASISTENCIA ---
+    const attendance = document.getElementById('attendance');
+    for (let i = 1; i <= 15; i++) {
+      attendance.insertAdjacentHTML('beforeend',
+        `<tr><td class="border border-slate-700 p-2 text-slate-400">${i}</td>` +
+        '<td class="border border-slate-700 p-2 h-9"></td>'.repeat(4) + '</tr>');
+    }
+
+    // --- EVALUACIÓN ---
+    const questions = [
+      { q: '¿Cuál es el control más eficaz según la jerarquía de controles?',
+        options: ['Usar EPP', 'Eliminar el peligro', 'Señalizar el área', 'Capacitar al trabajador'], answer: 1 },
+      { q: 'Si falta un control crítico en una tarea, el capataz debe:',
+        options: ['Iniciar con precaución', 'Pedir que el trabajador firme el ART', 'No iniciar o detener el trabajo', 'Avisar al final del turno'], answer: 2 },
+      { q: 'El ART debe realizarse:',
+        options: ['En la oficina, el día anterior', 'En el lugar de trabajo, con la cuadrilla que ejecuta la tarea', 'Solo por el prevencionista', 'Una vez al mes'], answer: 1 },
+      { q: 'A partir de qué altura se considera trabajo en altura con riesgo de caída:',
+        options: ['0,5 m', '1,0 m', '1,8 m', '3,0 m'], answer: 2 },
+      { q: 'Durante un izaje, el área bajo la carga suspendida debe:',
+        options: ['Estar despejada y segregada', 'Tener solo al rigger', 'Usarse para guiar la carga con las manos', 'Quedar libre solo si hay viento'], answer: 0 },
+      { q: 'Una herramienta con un ítem "No cumple" en la lista pre-uso:',
+        options: ['Se usa con cuidado', 'Se retira y se etiqueta', 'Se usa solo hasta terminar la tarea', 'Se presta a otra cuadrilla'], answer: 1 },
+      { q: 'En una observación de conducta, lo primero después de presentarse es:',
+        options: ['Anotar la falta', 'Reconocer lo que el trabajador hace bien', 'Llamar al supervisor', 'Sacar al trabajador del área'], answer: 1 },
+      { q: 'Un cuasi accidente (sin lesionados):',
+        options: ['No se reporta', 'Se reporta solo si hubo daño material', 'Se reporta siempre', 'Lo decide el trabajador'], answer: 2 },
+      { q: 'Ante un riesgo grave e inminente, el Código del Trabajo (art. 184 bis) permite al trabajador:',
+        options: ['Interrumpir sus labores y abandonar el lugar', 'Seguir trabajando con más EPP', 'Esperar la autorización escrita del jefe', 'Nada, debe cumplir la orden'], answer: 0 },
+      { q: 'Lo primero que hace el capataz ante un accidente es:',
+        options: ['Buscar al responsable', 'Controlar la escena para evitar más lesionados', 'Limpiar el área', 'Llenar el informe'], answer: 1 },
+    ];
+
+    const quiz = document.getElementById('quiz');
+    questions.forEach((item, i) => {
+      const opts = item.options.map((opt, j) => `
+        <label class="flex items-start gap-2 p-2 rounded hover:bg-slate-800 cursor-pointer">
+          <input type="radio" name="q${i}" value="${j}" required class="mt-0.5 accent-amber-500">
+          <span>${opt}</span>
+        </label>`).join('');
+      quiz.insertAdjacentHTML('beforeend', `
+        <fieldset id="fs${i}" class="bg-slate-900 p-3 rounded-lg text-sm">
+          <legend class="sr-only">Pregunta ${i + 1}</legend>
+          <p class="font-medium text-slate-100 mb-2">${i + 1}. ${item.q}</p>
+          ${opts}
+        </fieldset>`);
+    });
+    quiz.insertAdjacentHTML('beforeend', `
+      <div class="flex gap-3">
+        <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg text-sm transition shadow-lg">Revisar respuestas</button>
+        <button type="button" onclick="resetQuiz()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-3 rounded-lg text-sm transition">Reiniciar</button>
+      </div>`);
+
+    function gradeQuiz(e) {
+      e.preventDefault();
+      let score = 0;
+      questions.forEach((item, i) => {
+        const fs = document.getElementById('fs' + i);
+        const chosen = Number(quiz.querySelector(`input[name="q${i}"]:checked`).value);
+        const ok = chosen === item.answer;
+        if (ok) score++;
+        fs.classList.remove('ring-2', 'ring-emerald-500', 'ring-red-500');
+        fs.classList.add('ring-2', ok ? 'ring-emerald-500' : 'ring-red-500');
+        fs.querySelectorAll('label').forEach((label, j) => {
+          label.classList.toggle('text-emerald-400', j === item.answer);
+          label.classList.toggle('font-semibold', j === item.answer);
+        });
+      });
+      const result = document.getElementById('quiz-result');
+      const passed = score >= 8;
+      result.className = 'p-4 rounded-lg text-sm font-semibold ' +
+        (passed ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                : 'bg-red-500/20 text-red-300 border border-red-500/30');
+      result.textContent = `${passed ? '✅ Aprobado' : '⚠️ Reprobado'}: ${score} de ${questions.length} respuestas correctas.` +
+        (passed ? '' : ' Repase los módulos marcados en rojo y vuelva a intentarlo.');
+      result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function resetQuiz() {
+      quiz.reset();
+      quiz.querySelectorAll('fieldset').forEach(fs => fs.classList.remove('ring-2', 'ring-emerald-500', 'ring-red-500'));
+      quiz.querySelectorAll('label').forEach(l => l.classList.remove('text-emerald-400', 'font-semibold'));
+      document.getElementById('quiz-result').className = 'hidden';
+    }
+
+    // --- IMPRESIÓN ---
+    function openAllAndPrint() {
+      document.querySelectorAll('details').forEach(d => d.open = true);
+      window.print();
+    }
+  </script>
+</body>
+</html>
