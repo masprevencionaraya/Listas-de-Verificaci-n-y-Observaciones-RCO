@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Lecciones Aprendidas Etapa 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0f3a6e;--red:#d7141a;--red2:#b40f14;--green:#1f9a3a;--green2:#167a2d;--ink:#14243b;--line:#d6dde7;--bg:#f4f7fb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{width:1672px;height:940px;background:var(--bg);font-family:"Fira Sans Condensed","Liberation Sans",Arial,sans-serif;color:var(--ink);padding:6px 10px;display:flex;flex-direction:column}
+  .top{display:grid;grid-template-columns:1282px 1fr;align-items:center;height:90px}
+  .banner{background:linear-gradient(90deg,var(--red2),var(--red));border-radius:12px;height:88px;display:flex;align-items:center;gap:26px;padding-left:22px;color:#fff}
+  .banner h1{font-size:40px;font-weight:800;letter-spacing:.5px;line-height:1}
+  .banner p{font-size:24px;font-weight:600;margin-top:6px}
+  .logo{text-align:center;font-size:50px;font-weight:800;letter-spacing:-1px;transform:scaleX(.86)}
+  .logo .a{color:var(--red)}.logo .b{color:#4a4a4a}.logo sup{font-size:14px;color:#444}
+
+  .cols{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px}
+  .card{background:#fff;border-radius:8px;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+  .head{height:74px;display:flex;align-items:center;gap:20px;padding-left:24px;color:#fff;font-size:32px;font-weight:700;letter-spacing:.3px}
+  .head svg{width:44px;height:44px;fill:#fff;flex:none}
+  .pos .head{background:linear-gradient(90deg,var(--green2),var(--green))}
+  .neg .head{background:linear-gradient(90deg,var(--red2),var(--red))}
+  ul{list-style:none;flex:1;display:flex;flex-direction:column;gap:16px;padding:20px 24px}
+  li{flex:1;display:flex;align-items:center;gap:26px;padding:16px 28px;border-radius:10px;font-size:33px;line-height:1.28;border-left:8px solid}
+  .pos li{border-color:var(--green)}.neg li{border-color:var(--red)}
+  .pos li{background:#e9f6ec}.neg li{background:#fdeceb}
+  .num{width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;font-size:32px;font-weight:800;color:#fff}
+  .pos .num{background:var(--green)}.neg .num{background:var(--red)}
+  li b{font-weight:700}
+  .pos li b{color:var(--green2)}.neg li b{color:var(--red2)}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="banner">
+    <svg viewBox="0 0 64 64" width="70" height="70" fill="#fff"><path d="M32 4a20 20 0 0 0-12 36v8h24v-8A20 20 0 0 0 32 4zm-8 48h16v4H24zm3 6h10v4H27z"/><path d="M29 20h6v12h-6zm0 15h6v5h-6z" fill="#c4111a"/></svg>
+    <div><h1>LECCIONES APRENDIDAS 1° ETAPA</h1><p>SEGURIDAD Y SALUD OCUPACIONAL</p></div>
+  </div>
+  <div class="logo"><span class="a">SALFA</span><span class="b">MONTAJES</span><sup>®</sup></div>
+</div>
+
+<div class="cols">
+  <section class="card pos">
+    <div class="head"><svg viewBox="0 0 24 24"><path d="M2 21h4V9H2zm20-11a2 2 0 0 0-2-2h-6.3l1-4.6v-.3a1.5 1.5 0 0 0-.5-1.1L13.2 1 6.6 7.6A2 2 0 0 0 6 9v10a2 2 0 0 0 2 2h9a2 2 0 0 0 1.8-1.2l3-7.1a2 2 0 0 0 .2-.7z"/></svg>LO POSITIVO</div>
+    <ul>
+      <li><span class="num">1</span><span><b>Gestión de Seguridad desde el inicio</b> con modelo AWP y BIM.</span></li>
+      <li><span class="num">2</span><span><b>Identificación inicial y trabajo colaborativo</b> en la implementación de los Riesgos de Fatalidad.</span></li>
+      <li><span class="num">3</span><span><b>Uso de corpóreos, apoyo visual en terreno</b> y uso de plataforma PAES Salfa Montajes.</span></li>
+    </ul>
+  </section>
+  <section class="card neg">
+    <div class="head"><svg viewBox="0 0 24 24"><path d="M22 3h-4v12h4zM2 14a2 2 0 0 0 2 2h6.3l-1 4.6v.3a1.5 1.5 0 0 0 .5 1.1l.9.9 6.6-6.6A2 2 0 0 0 18 15V5a2 2 0 0 0-2-2H7a2 2 0 0 0-1.8 1.2l-3 7.1a2 2 0 0 0-.2.7z"/></svg>LO NEGATIVO</div>
+    <ul>
+      <li><span class="num">1</span><span><b>Dudas en aplicabilidad</b> de documentación bases de origen.</span></li>
+      <li><span class="num">2</span><span><b>Falta de repositorio de documentación vigente</b> tipo nube para contar con el más actualizado.</span></li>
+      <li><span class="num">3</span><span><b>Gran cantidad de reuniones</b> que disminuyen los tiempos para gestión en terreno.</span></li>
+      <li><span class="num">4</span><span><b>Falta de identificación inicial</b> en actividades de tiempo acotado pero asociadas a RF.</span></li>
+    </ul>
+  </section>
+</div>
+</body>
+</html>
