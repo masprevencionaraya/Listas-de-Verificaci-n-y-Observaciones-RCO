@@ -57,6 +57,12 @@
   .al.e h4{color:#8a6100}
   .al h4 span{font-weight:600;color:var(--ink);font-size:14.5px;white-space:nowrap}
   .al p{font-size:14.5px;line-height:1.25;margin-top:2px}
+  table.ex{width:100%;border-collapse:collapse;font-size:15.5px}
+  .ex th{background:var(--navy2);color:#fff;font-weight:500;padding:5px 8px;text-align:left}
+  .ex td{padding:0 8px;height:36px;border-bottom:1px solid var(--line)}
+  .ex td.d{font-weight:700;color:var(--red2);white-space:nowrap}
+  .ex tr:nth-child(even) td{background:#f7f9fc}
+  .ex td:last-child{white-space:nowrap;font-size:14.5px}
 
   /* Detalle */
   .grid2{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;min-height:0}
@@ -90,10 +96,10 @@
     <div class="card">
       <div class="head"><svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>MATRIZ FRENTE DE TRABAJO × RIESGO DE FATALIDAD (SIGO-ECC-003)</div>
       <table class="mx" id="mx"></table>
-      <div class="legend"><span><span class="dot a"></span>Aplica por la actividad</span><span><span class="dot e"></span>Evaluar en terreno / con mandante</span><span style="margin-left:auto">Encabezado verde = fecha actualizada en el cuadro · amarillo = pendiente de validar</span></div>
+      <div class="legend"><span><span class="dot a"></span>Aplica por la actividad</span><span><span class="dot e"></span>Evaluar en terreno / con mandante</span><span style="margin-left:auto">Fuente: Programa Obras Remanentes Interior Mina DD 05-11-2026</span></div>
     </div>
     <div class="card">
-      <div class="head"><svg viewBox="0 0 24 24"><path d="M8 2h8v3H8zM5 4h2v3h10V4h2a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm5.5 13.5 6-6-1.4-1.4-4.6 4.6-2.1-2.1-1.4 1.4z"/></svg>CONTRASTE CON CUADRO DE APLICABILIDAD</div>
+      <div class="head"><svg viewBox="0 0 24 24"><path d="M8 2h8v3H8zM5 4h2v3h10V4h2a1 1 0 0 1 1 1v16a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1zm5.5 13.5 6-6-1.4-1.4-4.6 4.6-2.1-2.1-1.4 1.4z"/></svg>INICIO DE EXPOSICIÓN SEGÚN PROGRAMA</div>
       <div class="alerts" id="alerts"></div>
     </div>
   </div>
@@ -124,15 +130,15 @@
 </section>
 
 <script>
-// Riesgos de fatalidad (SIGO-ECC-003) y su estado en el cuadro de aplicabilidad Etapa 2
+// Riesgos de fatalidad (SIGO-ECC-003)
 const RF = {
-  1:['Energía eléctrica','Vigente'], 2:['Trabajo en Altura','Vigente'], 3:['Maniobras de Izaje','Vigente'],
-  4:['Liberación descontrolada de energía','Diciembre 2026','Abril 2027'], 6:['Incendio','Vigente'], 7:['Sustancias peligrosas','Vigente'],
-  9:['Partes Móviles','Diciembre 2026','Abril 2027'], 10:['Vehículos','Vigente'], 11:['Espacios Confinados','Mayo 2027'],
-  13:['Caída de Objetos','Vigente'], 16:['Vaciado de chimeneas y piques','Diciembre 2026','N/A'], 19:['Estallido de Rocas','N/A'],
-  20:['Sílice','Vigente'], 22:['Fallas de estructuras para tránsito','Vigente'], 23:['Colapso macizo rocoso','N/A'],
-  25:['Equipos mineros e industriales','Vigente'], 27:['Atropello','Vigente'], 28:['Caving','N/A'],
-  30:['Tiro y arrastre','Diciembre 2026','Abril 2027'], 31:['Incendio en equipos mineros','Vigente']
+  1:['Energía eléctrica'], 2:['Trabajo en Altura'], 3:['Maniobras de Izaje'],
+  4:['Liberación descontrolada de energía'], 6:['Incendio'], 7:['Sustancias peligrosas'],
+  9:['Partes Móviles'], 10:['Vehículos'], 11:['Espacios Confinados'],
+  13:['Caída de Objetos'], 16:['Vaciado de chimeneas y piques'], 19:['Estallido de Rocas'],
+  20:['Sílice'], 22:['Fallas de estructuras para tránsito'], 23:['Colapso macizo rocoso'],
+  25:['Equipos mineros e industriales'], 27:['Atropello'], 28:['Caving'],
+  30:['Tiro y arrastre'], 31:['Incendio en equipos mineros']
 };
 const COLS = Object.keys(RF).map(Number);
 
@@ -205,8 +211,7 @@ const F = [
 const pad=n=>String(n).padStart(2,'0');
 F.forEach(f=>{f.A=new Set();f.E=new Set();f.p.forEach(([_,a,e])=>{a.forEach(x=>f.A.add(x));(e||[]).forEach(x=>f.E.add(x))});f.A.forEach(x=>f.E.delete(x))});
 const allA=new Set(F.flatMap(f=>[...f.A])), allE=new Set(F.flatMap(f=>[...f.E]).filter(x=>!allA.has(x)));
-const OPEN=new Set([11,19,23,28]), DONE=new Set([4,9,16,30]);
-const gap=c=>OPEN.has(c);
+
 
 // KPIs
 document.getElementById('kpis').innerHTML=[
@@ -214,29 +219,22 @@ document.getElementById('kpis').innerHTML=[
   [210,'Días de programa','16-11-2026 → 13-06-2027','var(--navy)'],
   [allA.size,'Riesgos de fatalidad aplican','por actividades del programa','var(--red)'],
   [allE.size,'Riesgos a evaluar','validar en terreno / mandante','var(--amber)'],
-  [OPEN.size,'Brechas pendientes',`${DONE.size} cerradas en el cuadro (Dic 2026)`,'var(--amber)']
+  [10,'Entregas de área','30-11-2026 → 09-04-2027','var(--navy)']
 ].map(([v,t,s,c])=>`<div class="kpi" style="border-left-color:${c}"><b style="color:${c}">${v}</b><span>${t}<small>${s}</small></span></div>`).join('');
 
 // Matriz
-document.getElementById('mx').innerHTML=`<thead><tr><th class="fr">Frente (fechas programa)</th>${COLS.map(c=>`<th class="rf ${gap(c)?'alert':DONE.has(c)?'done':''}"><div><b>RF ${pad(c)}</b> ${RF[c][0]}</div></th>`).join('')}</tr></thead><tbody>`+
+document.getElementById('mx').innerHTML=`<thead><tr><th class="fr">Frente (fechas programa)</th>${COLS.map(c=>`<th class="rf"><div><b>RF ${pad(c)}</b> ${RF[c][0]}</div></th>`).join('')}</tr></thead><tbody>`+
  F.map(f=>`<tr><td class="fr">${f.id}. ${f.n}<small>${f.d}</small></td>${COLS.map(c=>`<td>${f.A.has(c)?'<span class="dot a"></span>':f.E.has(c)?'<span class="dot e"></span>':''}</td>`).join('')}</tr>`).join('')+'</tbody>';
 
-// Brechas
-const first=c=>{const fs=F.filter(f=>f.A.has(c));const pd=s=>{const [d,m,y]=s.split(' ')[0].split('-');return +(y+m+d)};fs.sort((a,b)=>pd(a.d)-pd(b.d));return fs};
-const AL=[
-  [4,'ok','Bloqueo de energía hidráulica (guillotina), refrigerante, aire comprimido, presión diferencial en puertas de ventilación y desconexión E&I.'],
-  [9,'ok','Huinche y guillotina de gruesos, martillos picadores, compresores y ventiladores principales en operación.'],
-  [30,'ok','Traslado de equipo desde bodega (18-12), montaje de portones (06-01) e ingreso de ductos de compresores (13-02).',null,'18-12-2026'],
-  [16,'ok','Tapado de chimenea 07 y regularización ECF-20 en chimeneas 07 y 08.'],
-  [11,'e','Evaluar si el tapado de chimenea y la cabecera de extracción califican como espacio confinado (desde 04-12).'],
-  [19,'e','Excavaciones y anclajes en roca (REX Sur, cabeceras): validar con el mandante la exposición a estallido y colapso del macizo.',23],
-  [28,'e','Movilización y traslados en interior mina: validar cercanía de los frentes a zonas de hundimiento.']
-];
-document.getElementById('alerts').innerHTML=AL.map(([c,t,txt,c2,dd])=>{
-  const fs=first(c), d=dd||(fs.length?fs[0].d.split(' ')[0]:''), ids=fs.map(f=>f.id).sort((a,b)=>a-b);
-  const tit=c2?`RF ${pad(c)} y RF ${pad(c2)} · ${RF[c][0]} / ${RF[c2][0]}`:`RF ${pad(c)} · ${RF[c][0]}`;
-  const st=t==='ok'?`✓ ${RF[c][2]} → ${RF[c][1]}`:`Cuadro: ${RF[c][1]} · pendiente`;
-  return `<div class="al ${t}"><h4>${tit}<span>${st}</span></h4><p>${t==='ok'?`Expuesto desde <b>${d}</b> en ${ids.length>1?'frentes':'frente'} ${ids.join(', ')}. `:''}${txt}</p></div>`}).join('');
+// Inicio de exposición por RF (fecha de inicio del primer frente donde aplica, según programa)
+const pd=s=>{const [d,m,y]=s.split('-');return +(y+m+d)};
+const OVR={30:['18-12-2026']};
+const EXP=[...allA].map(c=>{const fs=F.filter(f=>f.A.has(c)).sort((a,b)=>a.id-b.id);
+  const d=OVR[c]?OVR[c][0]:fs.map(f=>f.d.split(' ')[0]).sort((a,b)=>pd(a)-pd(b))[0];return {c,d,ids:fs.map(f=>f.id)}})
+  .sort((a,b)=>pd(a.d)-pd(b.d)||a.c-b.c);
+document.getElementById('alerts').innerHTML='<table class="ex"><thead><tr><th>Desde</th><th>Riesgo de fatalidad</th><th>Frentes</th></tr></thead><tbody>'+
+  EXP.map(e=>`<tr><td class="d">${e.d}</td><td><b>RF ${pad(e.c)}</b> ${RF[e.c][0]}</td><td>${e.ids.join(', ')}</td></tr>`).join('')+'</tbody></table>'+
+  `<div class="al e"><h4>A evaluar en terreno / con mandante</h4><p>${[...allE].sort((a,b)=>a-b).map(c=>`RF ${pad(c)} ${RF[c][0]}`).join(' · ')}</p></div>`;
 
 // Detalle
 const chips=(a,e)=>a.map(x=>`<span class="chip">RF ${pad(x)}</span>`).join('')+(e||[]).map(x=>`<span class="chip e">RF ${pad(x)}?</span>`).join('');
