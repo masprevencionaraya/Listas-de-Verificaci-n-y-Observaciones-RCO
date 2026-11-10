@@ -55,7 +55,7 @@
   .dl{font-size:11px;display:flex;flex-direction:column;gap:9px}
   .dl b{font-size:13px}.dl i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}.dl small{color:var(--muted);font-size:10.5px}
 
-  .tl{position:relative;display:grid;grid-template-columns:repeat(var(--n,4),1fr);text-align:center;padding-top:4px}
+  .tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;padding-top:4px}
   .tl:before{content:"";position:absolute;left:0;right:0;top:34px;height:2px;background:var(--line)}
   .tl .d{font-size:12px;font-weight:700;color:var(--orange);height:22px}
   .tl .dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--orange);background:#fff;margin:2px auto 6px;position:relative;box-shadow:0 0 0 3px #fff}
@@ -123,26 +123,26 @@
       </section>
     </div>
   </div>
-  <div class="src">Fuente: Tabla de Riesgos de Fatalidad Aplicables SIGO-ECC-003 · Fechas Etapa 2 según Programa Obras Remanentes Interior Mina DD 05-11-2026 · X = aplica · N/A = no aplica</div>
+  <div class="src">Fuente: Tabla de Riesgos de Fatalidad Aplicables SIGO-ECC-003 · X = aplica · N/A = no aplica</div>
 </div>
 
 <script>
 // e1/e2: true = aplica. inicio: null = Vigente (si aplica) / No aplica; texto = fecha futura de incorporación en Etapa 2
 const R = [
   [1,'Energía eléctrica',1,1],[2,'Trabajo en Altura',1,1],[3,'Maniobras de Izaje',1,1],
-  [4,'Liberación descontrolada de energía',0,1,'Diciembre 2026'],
+  [4,'Liberación descontrolada de energía',0,1,'Abril 2027'],
   [5,'Caída de roca en mina rajo',0,0],[6,'Incendio',1,1],[7,'Sustancias peligrosas',1,1],
   [8,'Tronadura y explosivos',0,0],
-  [9,'Partes Móviles',0,1,'Diciembre 2026'],
+  [9,'Partes Móviles',0,1,'Abril 2027'],
   [10,'Vehículos',1,1],
   [11,'Espacios Confinados',0,1,'Mayo 2027'],
   [12,'Metales Fundidos',0,0],[13,'Caída de Objetos',1,1],[14,'Operación ferroviaria',0,0],
-  [15,'Avalancha y Aludes',0,0],[16,'Vaciados de chimeneas y piques',0,1,'Diciembre 2026'],[17,'Bombeo Agua Barro',0,0],
+  [15,'Avalancha y Aludes',0,0],[16,'Vaciados de chimeneas y piques',0,0],[17,'Bombeo Agua Barro',0,0],
   [18,'Planchoneo',0,0],[19,'Estallido de Rocas',0,0],[20,'Sílice',1,1],[21,'Arsénico',0,0],
   [22,'Fallas de Estructuras Para Tránsito',1,1],[23,'Colapso estructural del macizo rocoso',0,0],
   [24,'Taludes',0,0],[25,'Equipos mineros e industriales',1,1],[26,'Equipos autónomos',0,0],
   [27,'Atropello',1,1],[28,'Caving',0,0],[29,'Caída de cuerpos líquidos',0,0],
-  [30,'Tiro y arrastre',0,1,'Diciembre 2026'],
+  [30,'Tiro y arrastre',0,1,'Abril 2027'],
   [31,'Incendio en Equipos Mineros Industriales',1,1]
 ].map(([n,name,e1,e2,inicio])=>({n,name,e1:!!e1,e2:!!e2,inicio,code:'ECC-003-'+String(n).padStart(2,'0')}));
 
@@ -185,7 +185,6 @@ document.getElementById('donut').innerHTML=`<svg viewBox="0 0 120 120">${arcs}<t
 <div class="dl">${segs.map(([v,c,l])=>`<div><i style="background:${c}"></i><b>${v}</b> ${l} <small>(${pct(v)}%)</small></div>`).join('')}</div>`;
 
 // Línea de tiempo
-document.getElementById('tl').style.setProperty('--n',fut.length);
 document.getElementById('tl').innerHTML=fut.map(r=>`<div><div class="d">${r.inicio}</div><div class="dot"></div><div class="code">${r.code}</div><div class="n">${r.name}</div></div>`).join('');
 
 // Chips
