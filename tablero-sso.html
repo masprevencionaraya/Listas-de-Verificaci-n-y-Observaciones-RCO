@@ -68,6 +68,7 @@
   .track{position:relative;height:9px;background:linear-gradient(90deg,transparent calc(20% - 1px),#e8ecf1 calc(20% - 1px),#e8ecf1 20%,transparent 20%) 0 0/ 16.666% 100%}
   .fill{height:100%;border-radius:0 2px 2px 0}
   .pct{font-size:10px;color:var(--muted)}
+  .note{font-size:10px;font-weight:700;color:var(--c-oct);border-left:4px solid;padding-left:5px;line-height:12px;white-space:nowrap}
   .axis{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin:4px 46px 8px 0}
   .legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:10px;font-weight:700}
   .legend span{display:flex;align-items:center;gap:4px}
@@ -229,13 +230,19 @@
   const groups = [
     {name:'Cumplimiento Programa SSO', vals:[99, 97, 97, 97],    labels:['99,00%','97%','97%','97%']},
     {name:'Adherencia Cuentas Zyght',  vals:[100,100,100,100],   labels:['100%','100%','100%','100%']},
-    {name:'Cumplimiento RESSO',        vals:[0, 96, 95, 90],     labels:['0%','96%','95%','90%']}
+    {name:'Cumplimiento RESSO',        vals:[0, 96, 95, 90],     labels:['0%','96%','95%','90%'],
+     notes:['Implementación RESSO V11']}
   ];
   const max = 120;
   let html = '';
   groups.forEach(g => {
     html += `<div class="grp"><div class="grp-name">${g.name}</div>`;
     g.vals.forEach((v,i) => {
+      const note = g.notes && g.notes[i];
+      if (note) {
+        html += `<div class="row"><div class="note" style="border-left-color:${months[i].color}">${note}</div><span class="pct"></span></div>`;
+        return;
+      }
       html += `<div class="row"><div class="track"><div class="fill" style="width:${v/max*100}%;background:${months[i].color}"></div></div><span class="pct">${g.labels[i]}</span></div>`;
     });
     html += `</div>`;
