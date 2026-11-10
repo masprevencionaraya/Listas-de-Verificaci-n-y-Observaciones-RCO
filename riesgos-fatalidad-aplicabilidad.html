@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Riesgos de Fatalidad Aplicables</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f3a5c; --ink:#1d2733; --muted:#6b7684; --line:#e3e7ec; --bg:#eef1f4; --card:#fff;
+    --green:#1e8c5a; --green-bg:#dff3e8; --orange:#e48a1c; --orange-bg:#fdebd6; --gray:#cfd5dc; --gray-bg:#eceff2; --teal:#1a6f86;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink);padding:16px}
+  .wrap{max-width:1480px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+  header{background:var(--navy);color:#fff;border-radius:10px;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+  header h1{font-size:21px;font-weight:700}
+  header p{font-size:11.5px;opacity:.85;margin-top:3px}
+  .stamp{background:rgba(255,255,255,.14);border-radius:6px;padding:7px 12px;font-size:11.5px;white-space:nowrap}
+
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  .kpi{background:var(--card);border-radius:8px;border-top:4px solid;padding:12px 14px;display:flex;align-items:center;gap:12px}
+  .kpi b{font-size:34px;font-weight:800;line-height:1}
+  .kpi .t{font-size:12.5px;font-weight:600}
+  .kpi .s{font-size:10px;color:var(--muted);margin-top:4px}
+
+  .main{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+  .card{background:var(--card);border-radius:8px;padding:14px}
+  h2{font-size:12.5px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px}
+
+  table{width:100%;border-collapse:collapse;font-size:10.5px}
+  th{background:var(--navy);color:#fff;font-weight:600;padding:4px 6px;text-align:left}
+  th.c,td.c{text-align:center}
+  td{padding:2.5px 6px;border-bottom:1px solid var(--line);height:18px}
+  tr.na td{color:#a3abb5}
+  .pill{display:inline-block;min-width:42px;border-radius:9px;font-size:9px;font-weight:700;padding:1px 0;text-align:center}
+  .p-x{background:var(--green-bg);color:var(--green)}
+  .p-f{background:var(--orange-bg);color:var(--orange)}
+  .p-na{background:var(--gray-bg);color:#8a939e}
+  .fut{color:var(--orange);font-weight:700}
+  .leg{display:flex;gap:14px;font-size:9.5px;color:var(--muted);margin-top:8px}
+  .leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px;border:1px solid}
+
+  .right{display:flex;flex-direction:column;gap:12px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .sbar{display:grid;grid-template-columns:56px 1fr 50px;align-items:center;gap:8px;margin:10px 0 14px;font-size:12px;font-weight:600}
+  .track{height:20px;background:var(--gray);border-radius:3px;display:flex;overflow:hidden}
+  .seg-g{background:var(--green)} .seg-o{background:var(--orange)}
+  .sbar span:last-child{font-weight:700}.sbar small{font-weight:400;color:var(--muted)}
+  .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:10px;color:var(--muted)}
+  .legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+
+  .donut{display:flex;align-items:center;gap:18px}
+  .donut svg{width:130px;height:130px;flex:none}
+  .dl{font-size:11px;display:flex;flex-direction:column;gap:9px}
+  .dl b{font-size:13px}.dl i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}.dl small{color:var(--muted);font-size:10.5px}
+
+  .tl{position:relative;display:grid;grid-template-columns:repeat(4,1fr);text-align:center;padding-top:4px}
+  .tl:before{content:"";position:absolute;left:0;right:0;top:34px;height:2px;background:var(--line)}
+  .tl .d{font-size:12px;font-weight:700;color:var(--orange);height:22px}
+  .tl .dot{width:14px;height:14px;border-radius:50%;border:3px solid var(--orange);background:#fff;margin:2px auto 6px;position:relative;box-shadow:0 0 0 3px #fff}
+  .tl .dot:after{content:"";position:absolute;inset:2px;border-radius:50%;background:var(--orange)}
+  .tl .code{font-size:11px;font-weight:700;color:var(--navy)}
+  .tl .n{font-size:10.5px;padding:0 8px}
+
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .chips span{background:var(--green-bg);color:var(--green);font-size:9.5px;font-weight:700;border-radius:10px;padding:2px 8px}
+  ul.kp{padding-left:16px;font-size:11.5px;line-height:1.75}
+  .src{text-align:right;font-size:9.5px;color:var(--muted)}
+
+  @media (max-width:1100px){.main{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){body{padding:8px}.two{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}header{flex-direction:column;align-items:flex-start}.tl{grid-template-columns:1fr 1fr;row-gap:12px}.tl:before{display:none}.matrix{overflow-x:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Riesgos de Fatalidad Aplicables — Aplicabilidad por Etapa</h1>
+      <p>Estándares SIGO-ECC-003 · Resumen de controles críticos por etapa del proyecto</p>
+    </div>
+    <div class="stamp">Actualizado: Noviembre 2026 · 31 estándares</div>
+  </header>
+
+  <section class="kpis" id="kpis"></section>
+
+  <div class="main">
+    <section class="card matrix">
+      <h2>Matriz de aplicabilidad</h2>
+      <table>
+        <thead><tr><th class="c" style="width:30px">N°</th><th>Riesgo de fatalidad</th><th class="c">Etapa 1</th><th class="c">Etapa 2</th><th class="c">Inicio aplicación</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div class="leg"><span><i style="border-color:var(--green);background:var(--green-bg)"></i>Aplica</span><span><i style="border-color:var(--orange);background:var(--orange-bg)"></i>Aplica con fecha futura</span><span><i style="border-color:#b8c0c9;background:#fff"></i>No aplica (N/A)</span></div>
+    </section>
+
+    <div class="right">
+      <div class="two">
+        <section class="card">
+          <h2>Riesgos aplicables por etapa</h2>
+          <div id="bars"></div>
+          <div class="legend"><span><i style="background:var(--green)"></i>Vigente</span><span><i style="background:var(--orange)"></i>Incorporación programada</span><span><i style="background:var(--gray)"></i>No aplica</span></div>
+        </section>
+        <section class="card">
+          <h2>Distribución del total</h2>
+          <div class="donut" id="donut"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <h2>Próximas incorporaciones — Etapa 2</h2>
+        <div class="tl" id="tl"></div>
+      </section>
+
+      <section class="card">
+        <h2>Riesgos que aplican en ambas etapas</h2>
+        <div class="chips" id="chips"></div>
+      </section>
+
+      <section class="card">
+        <h2>Puntos clave</h2>
+        <ul class="kp" id="kp"></ul>
+      </section>
+    </div>
+  </div>
+  <div class="src">Fuente: Tabla de Riesgos de Fatalidad Aplicables SIGO-ECC-003 · X = aplica · N/A = no aplica</div>
+</div>
+
+<script>
+// e1/e2: true = aplica. inicio: null = Vigente (si aplica) / No aplica; texto = fecha futura de incorporación en Etapa 2
+const R = [
+  [1,'Energía eléctrica',1,1],[2,'Trabajo en Altura',1,1],[3,'Maniobras de Izaje',1,1],
+  [4,'Liberación descontrolada de energía',0,1,'Abril 2027'],
+  [5,'Caída de roca en mina rajo',0,0],[6,'Incendio',1,1],[7,'Sustancias peligrosas',1,1],
+  [8,'Tronadura y explosivos',0,0],
+  [9,'Partes Móviles',0,1,'Abril 2027'],
+  [10,'Vehículos',1,1],
+  [11,'Espacios Confinados',0,1,'Mayo 2027'],
+  [12,'Metales Fundidos',0,0],[13,'Caída de Objetos',1,1],[14,'Operación ferroviaria',0,0],
+  [15,'Avalancha y Aludes',0,0],[16,'Vaciados de chimeneas y piques',0,0],[17,'Bombeo Agua Barro',0,0],
+  [18,'Planchoneo',0,0],[19,'Estadillo de Rocas',0,0],[20,'Sílice',1,1],[21,'Arsénico',0,0],
+  [22,'Fallas de Estructuras Para Tránsito',1,1],[23,'Colapso estructural del macizo rocoso',0,0],
+  [24,'Taludes',0,0],[25,'Equipos mineros e industriales',1,1],[26,'Equipos autónomos',0,0],
+  [27,'Atropello',1,1],[28,'Caving',0,0],[29,'Caída de cuerpos líquidos',0,0],
+  [30,'Tiro y arrastre',0,1,'Abril 2027'],
+  [31,'Incendio en Equipos Mineros Industriales',1,1]
+].map(([n,name,e1,e2,inicio])=>({n,name,e1:!!e1,e2:!!e2,inicio,code:'ECC-003-'+String(n).padStart(2,'0')}));
+
+const total=R.length, both=R.filter(r=>r.e1&&r.e2), e1=R.filter(r=>r.e1), e2=R.filter(r=>r.e2);
+const fut=R.filter(r=>r.inicio), none=R.filter(r=>!r.e1&&!r.e2);
+const pct=x=>Math.round(x/total*100);
+const monthOrder=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const key=s=>{const [m,y]=s.split(' ');return +y*12+monthOrder.indexOf(m)};
+const abbr=s=>{const [m,y]=s.split(' ');return m.slice(0,3)+' '+y};
+fut.sort((a,b)=>key(a.inicio)-key(b.inicio)||a.n-b.n);
+const dates=[...new Set(fut.map(r=>r.inicio))];
+const first=dates[0], last=dates[dates.length-1];
+
+// KPIs
+document.getElementById('kpis').innerHTML=[
+  [total,'Riesgos evaluados','Estándar SIGO-ECC-003','var(--navy)'],
+  [e1.length,'Aplican en Etapa 1',pct(e1.length)+'% del total','var(--green)'],
+  [e2.length,'Aplican en Etapa 2',pct(e2.length)+'% del total','var(--teal)'],
+  [fut.length,'Incorporaciones programadas',`Etapa 2 · ${abbr(first)}${first!==last?' → '+abbr(last):''}`,'var(--orange)'],
+  [none.length,'No aplican al proyecto','N/A en ambas etapas','#8a939e']
+].map(([v,t,s,c])=>`<div class="kpi" style="border-color:${c}"><b style="color:${c}">${v}</b><div><div class="t">${t}</div><div class="s">${s}</div></div></div>`).join('');
+
+// Matriz
+const pill=(on,f)=>on?`<span class="pill ${f?'p-f':'p-x'}">X</span>`:`<span class="pill p-na">N/A</span>`;
+document.getElementById('rows').innerHTML=R.map(r=>{
+  const na=!r.e1&&!r.e2;
+  const ini=r.inicio?`<span class="fut">${r.inicio}</span>`:na?'No aplica':'Vigente';
+  return `<tr class="${na?'na':''}"><td class="c">${r.n}</td><td>${r.code} ${r.name}</td><td class="c">${pill(r.e1)}</td><td class="c">${pill(r.e2,!!r.inicio)}</td><td class="c">${ini}</td></tr>`;
+}).join('');
+
+// Barras por etapa
+const bar=(lbl,g,o)=>`<div class="sbar"><span>${lbl}</span><div class="track"><div class="seg-g" style="width:${g/total*100}%"></div><div class="seg-o" style="width:${o/total*100}%"></div></div><span>${g+o} <small>/ ${total}</small></span></div>`;
+document.getElementById('bars').innerHTML=bar('Etapa 1',e1.length,0)+bar('Etapa 2',e2.length-fut.length,fut.length);
+
+// Donut
+const segs=[[both.length,'var(--green)','Ambas etapas'],[fut.length,'var(--orange)','Solo Etapa 2 (programado)'],[none.length,'var(--gray)','No aplica']];
+let off=0;const C=2*Math.PI*40;
+const arcs=segs.map(([v,c])=>{const len=v/total*C;const a=`<circle r="40" cx="60" cy="60" fill="none" stroke="${c}" stroke-width="18" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"/>`;off+=len;return a}).join('');
+document.getElementById('donut').innerHTML=`<svg viewBox="0 0 120 120">${arcs}<text x="60" y="61" text-anchor="middle" font-size="20" font-weight="800" fill="#0f3a5c">${total}</text><text x="60" y="75" text-anchor="middle" font-size="8" fill="#6b7684">riesgos</text></svg>
+<div class="dl">${segs.map(([v,c,l])=>`<div><i style="background:${c}"></i><b>${v}</b> ${l} <small>(${pct(v)}%)</small></div>`).join('')}</div>`;
+
+// Línea de tiempo
+document.getElementById('tl').innerHTML=fut.map(r=>`<div><div class="d">${r.inicio}</div><div class="dot"></div><div class="code">${r.code}</div><div class="n">${r.name}</div></div>`).join('');
+
+// Chips
+document.getElementById('chips').innerHTML=both.map(r=>`<span>${r.n} · ${r.name}</span>`).join('');
+
+// Puntos clave
+const hito=fut.filter(r=>r.inicio===first).map(r=>r.name);
+const join=a=>a.length>1?a.slice(0,-1).join(', ')+' y '+a[a.length-1]:a[0];
+document.getElementById('kp').innerHTML=[
+  `<b>${both.length}</b> riesgos aplican desde la Etapa 1 y se mantienen en la Etapa 2.`,
+  `La Etapa 2 suma <b>${fut.length}</b> riesgos con inicio programado entre ${first} y ${last}.`,
+  `Próximo hito: <b>${first}</b> — ${join(hito)}.`,
+  `<b>${none.length}</b> de ${total} estándares (${pct(none.length)}%) no aplican al proyecto en ninguna etapa.`
+].map(t=>`<li>${t}</li>`).join('');
+</script>
+</body>
+</html>
