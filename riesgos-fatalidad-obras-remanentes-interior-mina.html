@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>RF Obras Remanentes Interior Mina</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--navy:#0f3a6e;--navy2:#164a86;--red:#d7141a;--red2:#b40f14;--green:#1f9a3a;--amber:#e8a200;--ink:#14243b;--muted:#5f6b7a;--line:#d6dde7;--soft:#eef3f9;--bg:#f4f7fb}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#cfd6df;font-family:"Fira Sans Condensed","Liberation Sans",Arial,sans-serif;color:var(--ink)}
+  .slide{width:1672px;height:940px;background:var(--bg);padding:6px 10px;display:flex;flex-direction:column;margin:0 auto 20px;overflow:hidden}
+  .top{display:grid;grid-template-columns:1282px 1fr;align-items:center;height:90px;flex:none}
+  .banner{background:linear-gradient(90deg,var(--red2),var(--red));border-radius:12px;height:88px;display:flex;align-items:center;gap:24px;padding-left:22px;color:#fff}
+  .banner svg{width:62px;height:62px;fill:#fff;flex:none}
+  .banner h1{font-size:36px;font-weight:800;letter-spacing:.4px;line-height:1}
+  .banner p{font-size:21px;font-weight:600;margin-top:6px}
+  .logo{text-align:center;font-size:50px;font-weight:800;letter-spacing:-1px;transform:scaleX(.86)}
+  .logo .a{color:var(--red)}.logo .b{color:#4a4a4a}.logo sup{font-size:14px;color:#444}
+
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:10px 0;flex:none}
+  .kpi{background:#fff;border-radius:6px;border:1px solid var(--line);border-left:6px solid var(--navy);padding:8px 16px;display:flex;align-items:center;gap:14px}
+  .kpi b{font-size:40px;font-weight:800;line-height:1}
+  .kpi span{font-size:17px;line-height:1.15}
+  .kpi small{display:block;font-size:14px;color:var(--muted)}
+
+  .main{flex:1;display:grid;grid-template-columns:1fr 470px;gap:10px;min-height:0}
+  .card{background:#fff;border-radius:6px;border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column}
+  .head{height:44px;flex:none;display:flex;align-items:center;gap:14px;padding-left:16px;color:#fff;background:var(--navy);font-size:21px;font-weight:700;letter-spacing:.3px}
+  .head.red{background:linear-gradient(90deg,var(--red2),var(--red))}
+  .head svg{width:26px;height:26px;fill:#fff}
+
+  /* Matriz */
+  table.mx{border-collapse:collapse;width:100%}
+  .mx th{background:var(--navy2);color:#fff;font-weight:500;border-right:1px solid #ffffff40}
+  .mx th.rf{height:138px;width:44px;padding:0;vertical-align:bottom}
+  .mx th.rf div{writing-mode:vertical-rl;transform:rotate(180deg);font-size:13.5px;line-height:1.05;padding:6px 0;margin:0 auto;white-space:nowrap}
+  .mx th.rf div b{font-weight:800;font-size:15px}
+  .mx th.rf.alert{background:var(--red)}
+  .mx th.fr{text-align:left;padding:0 12px;font-size:16px}
+  .mx td{border-top:1px solid var(--line);border-right:1px solid var(--line);text-align:center;height:56px;font-size:15px}
+  .mx td.fr{text-align:left;padding:4px 12px;font-size:16px;line-height:1.15;font-weight:600}
+  .mx td.fr small{display:block;font-weight:400;color:var(--muted);font-size:13.5px;margin-top:2px}
+  .mx tr:nth-child(even) td.fr{background:#f7f9fc}
+  .dot{display:inline-block;width:22px;height:22px;border-radius:50%}
+  .dot.a{background:var(--red)}
+  .dot.e{border:3px solid var(--amber);background:#fff6dc}
+  .legend{display:flex;gap:22px;align-items:center;font-size:15px;color:var(--muted);padding:6px 14px;border-top:1px solid var(--line);margin-top:auto}
+  .legend .dot{width:16px;height:16px;vertical-align:-3px;margin-right:6px}
+
+  /* Alertas */
+  .alerts{padding:10px 14px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+  .al{border-left:6px solid var(--red);background:#fdeceb;border-radius:6px;padding:7px 12px}
+  .al.e{border-color:var(--amber);background:#fff6dc}
+  .al h4{font-size:17px;font-weight:700;color:var(--red2);display:flex;justify-content:space-between;gap:8px}
+  .al.e h4{color:#8a6100}
+  .al h4 span{font-weight:600;color:var(--ink);font-size:14.5px;white-space:nowrap}
+  .al p{font-size:14.5px;line-height:1.25;margin-top:2px}
+
+  /* Detalle */
+  .grid2{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;min-height:0}
+  .fc .head{justify-content:space-between;padding-right:14px;font-size:19px}
+  .fc .head small{font-size:15px;font-weight:500;opacity:.9}
+  .fc .act{font-size:15.5px;color:var(--muted);padding:7px 14px;border-bottom:1px solid var(--line);line-height:1.3}
+  .fc .act b{color:var(--ink)}
+  .fc ul{list-style:none;padding:2px 14px 6px;flex:1;display:flex;flex-direction:column}
+  .fc li{flex:1;max-height:62px;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line);font-size:19px;line-height:1.2}
+  .fc li:last-child{border-bottom:0}
+  .chips{display:flex;gap:4px;flex:none}
+  .chip{font-size:15px;font-weight:700;border-radius:4px;padding:2px 7px;color:#fff;background:var(--red);white-space:nowrap}
+  .chip.e{background:#fff6dc;color:#8a6100;border:1.5px solid var(--amber)}
+  .span2{grid-row:span 2}
+  .note{font-size:15px;color:var(--muted);padding:8px 14px;line-height:1.35}
+</style>
+</head>
+<body>
+
+<!-- ============ SLIDE 1: MATRIZ ============ -->
+<section class="slide" id="s1">
+  <div class="top">
+    <div class="banner">
+      <svg viewBox="0 0 24 24"><path d="M12 1 23 21H1zm-1 7v7h2V8zm0 9v2h2v-2z"/></svg>
+      <div><h1>RIESGOS DE FATALIDAD · OBRAS REMANENTES INTERIOR MINA</h1><p>Identificación desde el programa DD 05-11-2026 · 16-11-2026 al 13-06-2027</p></div>
+    </div>
+    <div class="logo"><span class="a">SALFA</span><span class="b">MONTAJES</span><sup>®</sup></div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="main">
+    <div class="card">
+      <div class="head"><svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>MATRIZ FRENTE DE TRABAJO × RIESGO DE FATALIDAD (SIGO-ECC-003)</div>
+      <table class="mx" id="mx"></table>
+      <div class="legend"><span><span class="dot a"></span>Aplica por la actividad</span><span><span class="dot e"></span>Evaluar en terreno / con mandante</span><span style="margin-left:auto">Encabezado rojo = en el cuadro de aplicabilidad figura con inicio posterior o como N/A</span></div>
+    </div>
+    <div class="card">
+      <div class="head red"><svg viewBox="0 0 24 24"><path d="M12 1 23 21H1zm-1 7v7h2V8zm0 9v2h2v-2z"/></svg>BRECHAS VS CUADRO DE APLICABILIDAD</div>
+      <div class="alerts" id="alerts"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: DETALLE 1-4 ============ -->
+<section class="slide" id="s2">
+  <div class="top">
+    <div class="banner">
+      <svg viewBox="0 0 24 24"><path d="M12 1 23 21H1zm-1 7v7h2V8zm0 9v2h2v-2z"/></svg>
+      <div><h1>PELIGROS Y RIESGOS DE FATALIDAD POR FRENTE (1/2)</h1><p>Obras Remanentes Interior Mina · Programa DD 05-11-2026</p></div>
+    </div>
+    <div class="logo"><span class="a">SALFA</span><span class="b">MONTAJES</span><sup>®</sup></div>
+  </div>
+  <div class="grid2" id="g1"></div>
+</section>
+
+<!-- ============ SLIDE 3: DETALLE 5-7 ============ -->
+<section class="slide" id="s3">
+  <div class="top">
+    <div class="banner">
+      <svg viewBox="0 0 24 24"><path d="M12 1 23 21H1zm-1 7v7h2V8zm0 9v2h2v-2z"/></svg>
+      <div><h1>PELIGROS Y RIESGOS DE FATALIDAD POR FRENTE (2/2)</h1><p>Obras Remanentes Interior Mina · Programa DD 05-11-2026</p></div>
+    </div>
+    <div class="logo"><span class="a">SALFA</span><span class="b">MONTAJES</span><sup>®</sup></div>
+  </div>
+  <div class="grid2" id="g2"></div>
+</section>
+
+<script>
+// Riesgos de fatalidad (SIGO-ECC-003) y su estado en el cuadro de aplicabilidad Etapa 2
+const RF = {
+  1:['Energía eléctrica','Vigente'], 2:['Trabajo en Altura','Vigente'], 3:['Maniobras de Izaje','Vigente'],
+  4:['Liberación descontrolada de energía','Abril 2027'], 6:['Incendio','Vigente'], 7:['Sustancias peligrosas','Vigente'],
+  9:['Partes Móviles','Abril 2027'], 10:['Vehículos','Vigente'], 11:['Espacios Confinados','Mayo 2027'],
+  13:['Caída de Objetos','Vigente'], 16:['Vaciado de chimeneas y piques','N/A'], 19:['Estallido de Rocas','N/A'],
+  20:['Sílice','Vigente'], 22:['Fallas de estructuras para tránsito','Vigente'], 23:['Colapso macizo rocoso','N/A'],
+  25:['Equipos mineros e industriales','Vigente'], 27:['Atropello','Vigente'], 28:['Caving','N/A'],
+  30:['Tiro y arrastre','Abril 2027'], 31:['Incendio en equipos mineros','Vigente']
+};
+const COLS = Object.keys(RF).map(Number);
+
+// Frentes del programa. p = [peligro, [RF aplica], [RF evaluar]]
+const F = [
+ {id:1, n:'Refuerzo huinche cilindros guillotina de gruesos N41/42 y S04', d:'01-12-2026 → 17-12-2026',
+  act:'Estructura pesada (60-150 kg/m) y liviana · Tableros de distribución de poder · Canalización y conduits · Tendido y conexionado de cables en sala eléctrica',
+  p:[['Izaje de estructura pesada en espacio reducido',[3,13]],
+     ['Montaje de estructura en altura',[2]],
+     ['Energía hidráulica de cilindros de guillotina sin bloqueo',[4]],
+     ['Huinche y guillotina de gruesos con movimiento',[9]],
+     ['Conexionado en sala eléctrica y tableros',[1]],
+     ['Soldadura y corte en interior mina',[6]],
+     ['Movimiento de cargas con tecle / tirfor',[],[30]]]},
+ {id:2, n:'Montaje HVAC salas eléctricas 222440-SEL-002 / 001 / 003 N41', d:'04-12-2026 → 09-06-2027',
+  act:'Saneamiento y obras civiles · Desmantelamiento HVAC y ductos · Desmontaje y montaje de puertas · Condensador, evaporador, presurizador y CCM · Piping línea alta y baja · TICA-FO · Pruebas con presurizador',
+  p:[['Trabajo en sala eléctrica energizada, montaje de CCM',[1]],
+     ['Refrigerante y líneas presurizadas en desmontaje y pruebas',[4,7]],
+     ['Izaje de puertas, condensador y evaporador',[3,13]],
+     ['Trabajo en altura en ductos y equipos',[2]],
+     ['Brazing / soldadura de piping',[6]],
+     ['Polvo en saneamiento y obras civiles',[20]],
+     ['Ventiladores HVAC y presurizador en pruebas',[],[9]]]},
+ {id:3, n:'Obras civiles unidades hidráulicas martillos EVAC N41/42', d:'31-12-2026 → 09-02-2027',
+  act:'Excavaciones locales · Malla, emplantillado, armaduras y hormigón H35 · Plataforma de acero, parrillas, barandas, rejas y anclajes · Malla de tierra y conduits',
+  p:[['Martillo picador y unidad hidráulica existentes en operación',[4,9,25]],
+     ['Montaje de plataforma, parrillas y barandas',[2,22]],
+     ['Izaje de plataforma y parrillas',[3,13]],
+     ['Camión mixer y equipos en galería',[10,27]],
+     ['Excavación y perforación de anclajes',[20]],
+     ['Soldadura · conexión de malla de tierra',[6,1]],
+     ['Cercanía a parrilla / pique de traspaso',[],[16]]]},
+ {id:4, n:'Mejoras operación compresores SCH N41/42 y S04', d:'13-02-2027 → 05-03-2027',
+  act:'Traslado e ingreso de nuevos ductos · Soportación · Desmontaje ductos existentes TA/TB · Montaje nuevos ductos TA/TB · Aislación',
+  p:[['Aire comprimido en ductos al desmontar',[4]],
+     ['Compresores con partes móviles',[9]],
+     ['Traslado e ingreso de ductos (arrastre y maniobras)',[30,3,13]],
+     ['Montaje de ductos y soportes en altura',[2]],
+     ['Corte y soldadura',[6]],
+     ['Tableros y alimentación de compresores',[],[1]]]},
+ {id:5, n:'Obras civiles ventiladores REX Sur', d:'06-03-2027 → 05-05-2027',
+  act:'Excavaciones · Emplantillado, armaduras y hormigón de fundaciones · Estructura liviana y mediana · Anclajes · Rejas · Malla de tierra y canalización',
+  p:[['Excavación y anclajes en roca',[20],[19,23]],
+     ['Montaje de estructura liviana y mediana',[2,3,13]],
+     ['Camión mixer y equipos en galería',[10,27]],
+     ['Rejas y estructuras de tránsito',[],[22]],
+     ['Ventiladores existentes en el área',[],[9,4]],
+     ['Malla de tierra cerca de equipos energizados',[],[1]]]},
+ {id:6, n:'Obras remanentes ventilación de extracción principal', d:'04-12-2026 → 07-03-2027',
+  act:'Tapado chimenea 07 Nv. inf. · Tapado rampa conexión (hormigón armado) · Regularización ECF-20 chimeneas 07 y 08 Nv. sup. · Tapado cabecera extracción #1 · Andamios y obras civiles · Desmontaje puertas y montaje de 2 portones · Desconexión E&I, tableros y canalización · Pruebas PEM',
+  p:[['Trabajo en boca de chimeneas y cabecera de extracción',[16,2],[11]],
+     ['Presión diferencial y flujo de aire en puertas de ventilación',[4]],
+     ['Ventiladores principales de extracción',[9]],
+     ['Desconexión E&I, tableros y pruebas PEM',[1,4]],
+     ['Izaje y arrastre de portones y equipos',[3,30,13]],
+     ['Andamios y obras civiles en altura',[22,2]],
+     ['Aire de retorno con gases',[],[7]],
+     ['Roca en cabeceras y chimeneas',[20],[19,23]],
+     ['Soldadura en interior mina',[6]]]},
+ {id:7, n:'Transversal interior mina', d:'16-11-2026 → 13-06-2027',
+  act:'Movilización y acreditación · Habilitar y desmovilizar estándar de sitio en cada frente · Traslados de personal y materiales',
+  p:[['Tránsito y traslado en rampas y galerías',[10,27]],
+     ['Incendio en interior mina y en equipos',[6,31]],
+     ['Interacción con equipos mineros en operación',[25]],
+     ['Polvo de sílice',[20]],
+     ['Cercanía a zonas de hundimiento',[],[28]]]}
+];
+
+// ===== Cálculos =====
+const pad=n=>String(n).padStart(2,'0');
+F.forEach(f=>{f.A=new Set();f.E=new Set();f.p.forEach(([_,a,e])=>{a.forEach(x=>f.A.add(x));(e||[]).forEach(x=>f.E.add(x))});f.A.forEach(x=>f.E.delete(x))});
+const allA=new Set(F.flatMap(f=>[...f.A])), allE=new Set(F.flatMap(f=>[...f.E]).filter(x=>!allA.has(x)));
+const gap=c=>RF[c][1]!=='Vigente';
+
+// KPIs
+document.getElementById('kpis').innerHTML=[
+  [7,'Frentes de trabajo','6 frentes + transversal','var(--navy)'],
+  [210,'Días de programa','16-11-2026 → 13-06-2027','var(--navy)'],
+  [allA.size,'Riesgos de fatalidad aplican','por actividades del programa','var(--red)'],
+  [allE.size,'Riesgos a evaluar','validar en terreno / mandante','var(--amber)'],
+  [COLS.filter(c=>gap(c)&&(allA.has(c)||allE.has(c))).length,'Brechas con el cuadro','RF con inicio posterior o N/A','var(--red)']
+].map(([v,t,s,c])=>`<div class="kpi" style="border-left-color:${c}"><b style="color:${c}">${v}</b><span>${t}<small>${s}</small></span></div>`).join('');
+
+// Matriz
+document.getElementById('mx').innerHTML=`<thead><tr><th class="fr">Frente (fechas programa)</th>${COLS.map(c=>`<th class="rf ${gap(c)?'alert':''}"><div><b>RF ${pad(c)}</b> ${RF[c][0]}</div></th>`).join('')}</tr></thead><tbody>`+
+ F.map(f=>`<tr><td class="fr">${f.id}. ${f.n}<small>${f.d}</small></td>${COLS.map(c=>`<td>${f.A.has(c)?'<span class="dot a"></span>':f.E.has(c)?'<span class="dot e"></span>':''}</td>`).join('')}</tr>`).join('')+'</tbody>';
+
+// Brechas
+const first=c=>{const fs=F.filter(f=>f.A.has(c));const pd=s=>{const [d,m,y]=s.split(' ')[0].split('-');return +(y+m+d)};fs.sort((a,b)=>pd(a.d)-pd(b.d));return fs};
+const AL=[
+  [4,'a','Bloqueo de energía hidráulica (guillotina), refrigerante, aire comprimido, presión diferencial en puertas de ventilación y desconexión E&I.'],
+  [9,'a','Huinche y guillotina de gruesos, martillos picadores, compresores y ventiladores principales en operación.'],
+  [30,'a','Traslado de equipo desde bodega (18-12), montaje de portones (06-01) e ingreso de ductos de compresores (13-02).',null,'18-12-2026'],
+  [16,'a','Tapado de chimenea 07 y regularización ECF-20 en chimeneas 07 y 08.'],
+  [11,'e','Evaluar si el tapado de chimenea y la cabecera de extracción califican como espacio confinado (desde 04-12).'],
+  [19,'e','Excavaciones y anclajes en roca (REX Sur, cabeceras): validar con el mandante la exposición a estallido y colapso del macizo.',23],
+  [28,'e','Movilización y traslados en interior mina: validar cercanía de los frentes a zonas de hundimiento.']
+];
+document.getElementById('alerts').innerHTML=AL.map(([c,t,txt,c2,dd])=>{
+  const fs=first(c), d=dd||(fs.length?fs[0].d.split(' ')[0]:''), ids=fs.map(f=>f.id).sort((a,b)=>a-b);
+  const tit=c2?`RF ${pad(c)} y RF ${pad(c2)} · ${RF[c][0]} / ${RF[c2][0]}`:`RF ${pad(c)} · ${RF[c][0]}`;
+  return `<div class="al ${t}"><h4>${tit}<span>Cuadro: ${RF[c][1]}</span></h4><p>${t==='a'?`Expuesto desde <b>${d}</b> en ${ids.length>1?'frentes':'frente'} ${ids.join(', ')}. `:''}${txt}</p></div>`}).join('');
+
+// Detalle
+const chips=(a,e)=>a.map(x=>`<span class="chip">RF ${pad(x)}</span>`).join('')+(e||[]).map(x=>`<span class="chip e">RF ${pad(x)}?</span>`).join('');
+const card=f=>`<div class="card fc ${f.id===6?'span2':''}"><div class="head"><span>${f.id}. ${f.n}</span><small>${f.d}</small></div><div class="act"><b>Actividades:</b> ${f.act}</div><ul>${f.p.map(([t,a,e])=>`<li><span>${t}</span><span class="chips">${chips(a,e)}</span></li>`).join('')}</ul></div>`;
+document.getElementById('g1').innerHTML=F.slice(0,4).map(card).join('');
+document.getElementById('g2').innerHTML=card(F[5])+card(F[4])+card(F[6]).replace('</ul></div>','</ul><div class="note"><span class="chip">RF xx</span> aplica &nbsp; <span class="chip e">RF xx?</span> evaluar en terreno o con el mandante. Identificación preliminar basada en el nombre y alcance de las actividades del programa; validar en la ART / AST de cada frente.</div></div>');
+</script>
+</body>
+</html>
