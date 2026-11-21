@@ -65,6 +65,8 @@ def riesgo_general(peligro, rf, especifico):
         return "Caída de objetos (RF13)"
     if "CARGA SUSPENDIDA" in p:
         return "Aplastamiento por carga suspendida (RF03)"
+    if "CLIMA" in p:
+        return "Condiciones climáticas adversas"
     if "CHOQUE CONTRA OBJETO" in p:
         return "Choque contra objetos"
     if "SUSTANCIA" in p:
@@ -112,6 +114,8 @@ def riesgo_general(peligro, rf, especifico):
         return "Emergencia por desastre natural"
     if "ANTROPIC" in p:
         return "Emergencia antrópica"
+    if p.strip() in ("CONTACTO", "CONTACTO CON"):
+        return "Contacto con (peligro sin especificar)"
     return (peligro or "").strip().capitalize()
 
 
@@ -220,6 +224,10 @@ def revisar(matrices, cabeceras):
                             f"Riesgo de higiene '{f['peligro']}' con residual '{f['vep_r']} / {f['nivel_r']}' "
                             "(escala músculo-esquelética).",
                             "Usar escala de higiene (para ruido: DRD < 0,33 → NIVEL 1)."))
+            if pel.endswith(" CON") or pel.endswith(" POR/CONTRA") or pel in ("CONTACTO", "CONTACTO CON"):
+                obs.append(("Media", nombre, fila, "Peligro incompleto",
+                            f"El peligro '{f['peligro']}' está incompleto (no indica con qué).",
+                            "Especificar el agente o la fuente (p. ej. 'Contacto con partes cortantes/calientes')."))
             if "UV" in pel and "(P6)" in esp:
                 obs.append(("Baja", nombre, fila, "Código de riesgo específico",
                             "Radiación UV codificada como '(P6) Exposición a Calor'.",
@@ -291,9 +299,16 @@ def escribir_observaciones(ws, matrices, cabeceras):
 
 def main(carpeta, salida):
     archivos = sorted(glob.glob(os.path.join(carpeta, "*.xls*")))
+    import hashlib
     matrices = []
     cabeceras = {}
+    hashes = {}
     for a in archivos:
+        h = hashlib.md5(open(a, "rb").read()).hexdigest()
+        if h in hashes:
+            print(f"Omitido (idéntico a {hashes[h]}): {a}")
+            continue
+        hashes[h] = os.path.basename(a)
         actividad, filas, cab = leer_matriz(a)
         nombre = re.sub(r"^[0-9a-f]{8}-", "", os.path.basename(a))
         matrices.append((nombre, actividad, filas))
